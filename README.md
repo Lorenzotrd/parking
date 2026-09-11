@@ -1,24 +1,32 @@
 # Se garer en France
 
-Comparateur de parkings sur quatre métropoles. On pose son point de départ sur
-la carte, on choisit une durée, et les parkings se classent du moins cher au
-plus cher avec le temps de marche. On en sélectionne un, et le bouton
+Comparateur de parkings. Une carte de France sert de point d'entrée : on touche
+une ville, on pose son point sur le plan, on choisit une durée, et les parkings
+se classent du moins cher au plus cher. On en sélectionne un, et le bouton
 d'itinéraire l'ouvre dans Google Maps, Waze ou Plans.
 
 Application d'une seule page, sans dépendance, sans build JavaScript.
 
+## La carte de France
+
+L'écran d'entrée est une carte du pays. Quatre villes en bleu sont couvertes par
+des tarifs officiels à jour. Quinze autres apparaissent en gris : leur portail a
+été vérifié, mais il publie des parkings sans prix, ou des prix trop anciens.
+C'est une information en soi, la donnée ouverte du stationnement est très inégale
+d'une ville à l'autre.
+
 ## Une source par ville
 
-Chaque ville est lue **au portail de sa propre métropole**, celle qui fixe les
-prix. L'application affiche pour chacune le nom du jeu de données et sa date de
-mise à jour, et chaque fiche renvoie vers la source.
+Chaque ville est lue **au portail qui fixe ses prix**. L'application affiche pour
+chacune le nom du jeu de données et sa date de mise à jour, et chaque fiche
+renvoie vers la source.
 
-| Ville | Parkings | Places | Source | Tarifs |
+| Ville | Parkings | Places | Jeu de données | Tarifs |
 |---|---:|---:|---|---:|
-| Bordeaux | 99 | 43 066 | Bordeaux Métropole, `st_park_p` | 86 |
-| Nantes | 89 | 18 190 | Nantes Métropole, lieux de stationnement | 89 |
-| Rouen | 30 | 7 043 | Métropole Rouen Normandie | 9 |
-| Paris | 64 | 28 603 | Saemes, format national | 37 |
+| Bordeaux | 99 | 43 066 | `st_park_p` | 86 |
+| Nantes | 89 | 18 190 | lieux de stationnement | 89 |
+| Rouen | 30 | 7 043 | ouvrage et parkings relais | 9 |
+| Paris | 64 | 28 603 | réseau Saemes | 37 |
 
 Bordeaux et Nantes publient en plus le nombre de places libres en continu.
 
@@ -42,8 +50,9 @@ sans aucun prix. Il n'existe aujourd'hui aucune source nationale de tarifs à jo
 
 ## Ce que l'app ne fait pas
 
-- **Le temps de marche est estimé**, pas calculé. Distance à vol d'oiseau majorée
-  de 28 % pour le détour, à 75 mètres par minute. L'erreur grandit avec la distance.
+- **Aucun itinéraire n'est calculé.** Les distances affichées sont mesurées à vol
+  d'oiseau depuis le point posé sur la carte. La route réelle est plus longue, et
+  c'est le bouton d'itinéraire qui la donne.
 - **Les durées sont celles de chaque source**, rien n'est interpolé. Une durée
   qu'une ville ne publie pas apparaît barrée et désactivée.
 - **Le stationnement en voirie n'est pas couvert**, sauf à Bordeaux où la source
@@ -69,10 +78,11 @@ Dans les deux cas, le compteur n'est affiché que s'il a moins de trois heures.
 ## Reconstruire les données
 
 ```bash
-python3 build/extract_cities.py   # portails des métropoles -> data/cities.json
-python3 build/build_maps.py       # OpenStreetMap           -> data/maps.json
+python3 build/extract_cities.py   # portails des villes -> data/cities.json
+python3 build/build_maps.py       # OpenStreetMap       -> data/maps.json
 python3 build/slim_maps.py        # allège les fonds de carte
-python3 build/assemble.py         # gabarit + données       -> index.html
+python3 build/build_france.py     # contours du pays    -> data/france.json
+python3 build/assemble.py         # gabarit + données   -> index.html
 ```
 
 Seule la bibliothèque standard de Python 3 est nécessaire. Le second script
@@ -80,9 +90,9 @@ interroge Overpass et prend quelques minutes ; il reprend là où il s'est arrê
 si `data/maps.json` existe déjà.
 
 Pour ajouter une ville, écrivez une fonction d'adaptation dans
-`build/extract_cities.py` et ajoutez-la à `SOURCES`. Cherchez d'abord si la
-métropole publie une grille tarifaire datée : sans elle, la ville n'a pas sa
-place ici.
+`build/extract_cities.py`, ajoutez-la à `SOURCES`, puis retirez la ville de la
+liste `CHECKED` de `build/build_france.py`. Cherchez d'abord si son portail
+publie une grille tarifaire datée : sans elle, la ville n'a pas sa place ici.
 
 ## Structure
 
@@ -91,9 +101,10 @@ index.html              page autonome, servie telle quelle
 favicon.svg
 vercel.json
 src/app.template.html   le gabarit, avec les marqueurs __MAPS__ et __CITIES__
-build/                  les quatre scripts de génération
+build/                  les cinq scripts de génération
 data/cities.json        parkings extraits, projetés en mètres
-data/maps.json          fonds de carte en chemins SVG
+data/maps.json          fonds de carte des villes, en chemins SVG
+data/france.json        contours du pays et villes vérifiées
 dist/artifact.html      variante sans <head>, pour publication en Artifact
 ```
 
@@ -108,5 +119,5 @@ transférés une fois compressée.
 
 Le code est libre d'usage. Les données restent sous leurs licences respectives :
 Licence Ouverte pour Bordeaux Métropole, Nantes Métropole, Métropole Rouen
-Normandie et Saemes, ODbL pour OpenStreetMap. Toute réutilisation doit conserver
+Normandie et Saemes, ODbL pour OpenStreetMap et pour les contours communaux. Toute réutilisation doit conserver
 ces attributions.

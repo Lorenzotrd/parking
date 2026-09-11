@@ -117,7 +117,7 @@ def bordeaux():
                       "at": r.get("mdate")} if r.get("connecte") == 1 else None),
         })
     return parkings, {
-        "nom": "Bordeaux Métropole", "jeu": ds, "host": host,
+        "nom": "Bordeaux Métropole", "court": "Bordeaux", "jeu": ds, "host": host,
         "url": f"https://{host}/explore/dataset/{ds}/",
         "maj": ods_modified(host, ds), "licence": "Licence Ouverte",
         "live_api": f"https://{host}/api/explore/v2.1/catalog/datasets/{ds}"
@@ -175,7 +175,7 @@ def nantes():
             "info": r.get("info"), "live": None,
         })
     return parkings, {
-        "nom": "Nantes Métropole", "jeu": ds_base, "host": host,
+        "nom": "Nantes Métropole", "court": "Nantes", "jeu": ds_base, "host": host,
         "url": f"https://{host}/explore/dataset/{ds_base}/",
         "maj": ods_modified(host, ds_base), "licence": "Licence Ouverte",
         "grille": ds_grid, "grille_maj": ods_modified(host, ds_grid),
@@ -221,7 +221,7 @@ def rouen():
                 "info": r.get("info"), "live": None,
             })
     return parkings, {
-        "nom": "Métropole Rouen Normandie", "jeu": " + ".join(sets), "host": host,
+        "nom": "Métropole Rouen Normandie", "court": "Rouen", "jeu": " + ".join(sets), "host": host,
         "url": f"https://{host}/explore/dataset/{sets[0]}/",
         "maj": ods_modified(host, sets[0]), "licence": "Licence Ouverte",
     }
@@ -267,7 +267,7 @@ def paris_saemes():
             "info": r.get("info"), "live": None,
         })
     return parkings, {
-        "nom": "Saemes", "jeu": "Parkings Saemes, format national",
+        "nom": "Saemes", "court": "Saemes", "jeu": "Parkings Saemes, format national",
         "host": "transport.data.gouv.fr",
         "url": "https://transport.data.gouv.fr/datasets/parkings-saemes",
         "maj": "2026-08-05", "licence": "Licence Ouverte",

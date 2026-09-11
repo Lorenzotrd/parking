@@ -263,13 +263,39 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
   box-shadow:0 3px 14px rgba(10,26,47,.4)}
 .pin.is-pick .dot{background:var(--paper)}
 .pin.mini.is-pick{background:var(--ink)}
-.cities{flex:1;min-height:0;overflow-y:auto;padding:8px 12px 30px;display:flex;flex-direction:column;gap:1px}
+.pk-body{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column}
+.pk-body>*{flex:none}
+.fr-wrap{height:330px;position:relative;background:var(--wash);overflow:hidden;
+  border-bottom:1px solid var(--line)}
+#frmap{position:absolute;inset:0;width:100%;height:100%;display:block}
+#frmap .dep{fill:var(--paper);stroke:var(--line);stroke-width:.7;vector-effect:non-scaling-stroke}
+.frpins{position:absolute;inset:0;pointer-events:none}
+.frpin{position:absolute;transform:translate(-50%,-100%);pointer-events:auto;display:flex;
+  flex-direction:column;align-items:center;gap:2px;white-space:nowrap}
+.frpin .bub{padding:5px 10px;border-radius:999px;font-size:12.5px;font-weight:600;
+  letter-spacing:-.01em;background:var(--blue);color:#fff;box-shadow:0 3px 12px var(--blue-ring)}
+.frpin .tip{width:0;height:0;border:4px solid transparent;border-top-color:var(--blue);margin-top:-2px}
+.frpin .sub{font-size:10px;font-weight:500;color:var(--mute);background:var(--paper);
+  padding:1px 6px;border-radius:999px;margin-top:1px}
+.frpin.off{transform:translate(-50%,-50%)}
+.frpin.off .bub{background:transparent;color:var(--faint);font-weight:500;font-size:11px;
+  box-shadow:none;padding:2px 5px;border:1px dashed var(--line)}
+.frpin.off .tip{display:none}
+.frpin.off:hover .bub{color:var(--ink-2);border-color:var(--faint)}
+.fr-legend{flex:none;display:flex;gap:16px;flex-wrap:wrap;font-size:11px;color:var(--mute);
+  padding:10px 18px 4px;line-height:1.4}
+.fr-legend i{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--blue);
+  margin-right:5px;vertical-align:middle}
+.fr-legend i.o{background:transparent;border:1px dashed var(--faint)}
+.fr-note{flex:none;font-size:11.5px;color:var(--mute);padding:2px 18px 10px;line-height:1.45}
+.cities{padding:4px 12px 30px;display:flex;flex-direction:column;gap:1px}
 .cities>*{flex:none}
 .crow{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 10px;
   border-radius:var(--r-md);text-align:left;transition:background .13s}
 .crow:hover{background:var(--wash)}
 .crow[aria-current="true"]{background:var(--blue-soft)}
-.crow .cn{font-family:"Familjen Grotesk",sans-serif;font-size:16px;font-weight:600;letter-spacing:-.02em}
+.crow .cn{font-family:"Familjen Grotesk",sans-serif;font-size:16px;font-weight:600;
+  letter-spacing:-.02em;display:block}
 .crow .cm{font-size:11.5px;color:var(--mute);margin-top:1px}
 .crow .cc{font-family:"Familjen Grotesk",sans-serif;font-size:19px;font-weight:600;color:var(--blue);letter-spacing:-.02em}
 @media (prefers-reduced-motion:reduce){*{transition-duration:.01ms !important}}
@@ -287,15 +313,15 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
   <aside class="pitch">
     <div class="kicker">Prototype · 4 villes</div>
     <h1>Le vrai prix de la place, <em>à la source</em>.</h1>
-    <p>Chaque ville est lue au portail de sa propre métropole, celle qui fixe les prix, et non à une compilation nationale en retard d'un an. Bordeaux et Nantes publient même leurs places libres en continu. Chaque tarif affiché porte le nom de son jeu de données et sa date.</p>
+    <p>Chaque ville est lue au portail qui fixe ses prix, et non à une compilation nationale en retard d'un an. Bordeaux et Nantes publient même leurs places libres en continu. Chaque tarif affiché porte le nom de son jeu de données et sa date.</p>
     <div class="facts">
-      <div class="fact"><b class="num" id="f-city">4</b><span>métropoles, données du mois</span></div>
+      <div class="fact"><b class="num" id="f-city">4</b><span>villes couvertes</span></div>
       <div class="fact"><b class="num" id="f-park">282</b><span>parkings référencés</span></div>
       <div class="fact"><b class="num" id="f-place">—</b><span>places au total</span></div>
     </div>
-    <p class="prov"><b>Pourquoi ce virage.</b> La version précédente lisait la base nationale. Contrôlée contre la grille officielle de Nantes, elle donnait 32 prix faux sur 33, sous-évalués de 18 % en médiane, et annonçait gratuits deux parkings payants. Ce fichier n'avait pas bougé depuis un an. Les portails des métropoles, eux, sont rafraîchis en continu.</p>
-    <p class="prov"><b>Ce qui reste estimé.</b> Le temps de marche, et lui seul, à vol d'oiseau majoré de 28 %. Quand une source ne renseigne pas un champ, l'app écrit « non renseigné » plutôt que de combler le trou. Le bouton d'itinéraire ouvre Google Maps, Waze ou Plans.</p>
-    <p class="prov"><b>Sources.</b> Bordeaux Métropole, Nantes Métropole, Métropole Rouen Normandie et Saemes, chacune sous Licence Ouverte. Fond de carte : <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, sous ODbL.</p>
+    <p class="prov"><b>Pourquoi ce virage.</b> La version précédente lisait la base nationale. Contrôlée contre la grille officielle de Nantes, elle donnait 32 prix faux sur 33, sous-évalués de 18 % en médiane, et annonçait gratuits deux parkings payants. Ce fichier n'avait pas bougé depuis un an. Les portails des villes, eux, sont rafraîchis en continu.</p>
+    <p class="prov"><b>Plus rien n'est estimé.</b> Les distances sont mesurées à vol d'oiseau depuis le point posé sur la carte, et le bouton d'itinéraire donne le trajet routier réel. Quand une source ne renseigne pas un champ, l'app écrit « non renseigné » plutôt que de combler le trou.</p>
+    <p class="prov"><b>Sources.</b> Bordeaux, Nantes, Rouen et Saemes, chacune sous Licence Ouverte, l'attribution complète figurant sur chaque fiche. Fond de carte : <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, sous ODbL.</p>
   </aside>
 
   <div class="shell"><div class="app">
@@ -320,7 +346,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
     </header>
 
     <div class="rail" id="rail" role="group" aria-label="Durée"></div>
-    <div class="rail walkrail" id="walkrail" role="group" aria-label="Distance à pied maximale"></div>
+    <div class="rail walkrail" id="walkrail" role="group" aria-label="Rayon de recherche"></div>
     <div class="filters" id="filters" role="group" aria-label="Filtres"></div>
 
     <div class="mapwrap" id="mapwrap">
@@ -345,7 +371,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
         <div><h3 id="sheet-title">Les moins chers</h3><div class="cnt" id="sheet-cnt">99 résultats</div></div>
         <div class="sorts" role="group" aria-label="Trier">
           <button id="s-price" aria-pressed="true">Prix</button>
-          <button id="s-walk" aria-pressed="false">Marche</button>
+          <button id="s-walk" aria-pressed="false">Distance</button>
         </div>
       </div>
       <div id="src-slot"></div>
@@ -369,15 +395,26 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
         <button class="iconbtn" id="pk-close" aria-label="Retour">
           <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
         </button>
-        <h3 id="pk-title">Choisir une ville</h3>
+        <h3 id="pk-title">Où cherchez-vous ?</h3>
       </div>
-      <div class="cities" id="cities"></div>
+      <div class="pk-body">
+        <div class="fr-wrap" id="fr-wrap">
+          <svg id="frmap" role="img" aria-label="Carte de France des villes couvertes"></svg>
+          <div class="frpins" id="frpins"></div>
+        </div>
+        <div class="fr-legend">
+          <span><i></i>Tarifs officiels à jour</span>
+          <span><i class="o"></i>Vérifiée, pas de tarif exploitable</span>
+        </div>
+        <div class="fr-note">Quinze autres villes ont été vérifiées : leur portail publie des parkings sans prix, ou des prix trop anciens pour être affichés.</div>
+        <div class="cities" id="cities"></div>
+      </div>
     </section>
   </div></div>
 </div>
 
 <script>
-const MAPS=__MAPS__, CITIES=__CITIES__;
+const MAPS=__MAPS__, CITIES=__CITIES__, FRANCE=__FRANCE__;
 const DUR=['30min','1h','2h','3h','4h','24h'];
 const DURLBL={'30min':'30 min','1h':'1 h','2h':'2 h','3h':'3 h','4h':'4 h','24h':'24 h'};
 const eur=new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR'});
@@ -393,7 +430,7 @@ const OUVR={ouvrage:'Ouvrage',enclos_en_surface:'Enclos',surface:'Surface',
 const ouvrageLabel=p=>{const k=(p.ouvrage||'').toLowerCase();return OUVR[k]||p.ouvrage||null;};
 
 const ORDER_C=['bordeaux','nantes','rouen','paris'].filter(k=>CITIES[k]);
-const S={city:ORDER_C[0],dur:'1h',sort:'price',sel:null,pick:null,filters:new Set(),me:null,live:{},maxWalk:15};
+const S={city:ORDER_C[0],dur:'1h',sort:'price',sel:null,pick:null,filters:new Set(),me:null,live:{},maxDist:1500};
 function loadPick(){try{return JSON.parse(localStorage.getItem('pick')||'{}');}catch(e){return {};}}
 function savePick(){try{
   const m=loadPick(); if(S.pick)m[S.city]=S.pick; else delete m[S.city];
@@ -497,8 +534,7 @@ me.addEventListener('keydown',e=>{
 // ---------- data helpers ----------
 const priceOf=(p,d)=>p.tar[d];
 function walkOf(p){
-  const d=Math.hypot(p.x-S.me.x,p.y-S.me.y)*1.28;
-  return {dist:Math.round(d),min:Math.max(1,Math.round(d/75))};
+  return {dist:Math.round(Math.hypot(p.x-S.me.x,p.y-S.me.y))};
 }
 const FILTERS=[
   {id:'priced',label:'Tarif renseigné',test:p=>p.tar[S.dur]!=null},
@@ -524,9 +560,9 @@ function ranked(){
   let l=C().parkings.slice();
   for(const f of FILTERS) if(S.filters.has(f.id)) l=l.filter(f.test);
   l=l.map(p=>({p,w:walkOf(p),c:priceOf(p,S.dur)}));
-  if(S.maxWalk) l=l.filter(r=>r.w.min<=S.maxWalk);
+  if(S.maxDist) l=l.filter(r=>r.w.dist<=S.maxDist);
   const key=r=>r.c==null?1e9:r.c;
-  l.sort((a,b)=>S.sort==='price'?(key(a)-key(b))||(a.w.min-b.w.min):(a.w.min-b.w.min)||(key(a)-key(b)));
+  l.sort((a,b)=>S.sort==='price'?(key(a)-key(b))||(a.w.dist-b.w.dist):(a.w.dist-b.w.dist)||(key(a)-key(b)));
   return l;
 }
 
@@ -597,12 +633,12 @@ function render(){
   document.getElementById('banner-slot').innerHTML=b;
 
   const src=c.source;
-  if(!list.length&&S.maxWalk){
+  if(!list.length&&S.maxDist){
     document.getElementById('list').innerHTML=
       '<div class="srcline" style="padding:18px 8px;font-size:13px">Aucun parking à moins de '+
-      S.maxWalk+' minutes à pied avec ces filtres. Élargissez la distance ou déplacez le point de départ.</div>';
+      fmtDist(S.maxDist)+' du point avec ces filtres. Élargissez le rayon ou déplacez le point.</div>';
   }
-  document.getElementById('src-slot').innerHTML='<div class="srcline"><b>'+src.nom+
+  document.getElementById('src-slot').innerHTML='<div class="srcline"><b>'+(src.court||src.nom)+
     '</b> · données du '+frDate(src.maj)+' · <a href="'+src.url+
     '" target="_blank" rel="noopener noreferrer">voir la source</a></div>';
 
@@ -613,7 +649,7 @@ function render(){
     slot.innerHTML='<div class="chosen"><div class="cx">'+
       '<div class="cl">Parking choisi</div>'+
       '<div class="cnm">'+pk.nom+'</div>'+
-      '<div class="cmt">'+pw.min+' min à pied · '+fmtDist(pw.dist)+
+      '<div class="cmt">'+fmtDist(pw.dist)+
       (pc==null?'':' · '+(pc===0?'gratuit':money(pc)+' pour '+DURLBL[S.dur]))+'</div></div>'+
       '<a class="cgo" href="'+gmaps(pk)+'" target="_blank" rel="noopener noreferrer">'+
       '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-8-8 18-2-8-8-2z"/></svg>Y aller</a>'+
@@ -645,8 +681,8 @@ function render(){
     else if(price===0)ph='<div class="price free">gratuit</div>';
     else ph='<div class="price">'+money(price)+'<small>'+DURLBL[S.dur]+'</small></div>';
     btn.innerHTML='<span class="rank num">'+(i+1)+'</span><span><span class="rname">'+p.nom+
-      '</span><span class="rmeta">'+w.min+' min à pied<span class="sep">·</span>'+fmtDist(w.dist)+
-      (p.places?'<span class="sep">·</span>'+nf.format(p.places)+' pl.':'')+
+      '</span><span class="rmeta">'+fmtDist(w.dist)+
+      (p.places?'<span class="sep">·</span>'+nf.format(p.places)+' places':'')+
       (tags.length?' '+tags.join(' '):'')+'</span></span>'+ph;
     btn.onclick=()=>openDetail(p.id);
     ul.appendChild(btn);
@@ -675,15 +711,15 @@ function buildRail(){
     rail.appendChild(b);
   });
 }
-const WALKS=[[5,'5 min'],[15,'15 min'],[30,'30 min'],[0,'Sans limite']];
+const WALKS=[[500,'500 m'],[1500,'1,5 km'],[4000,'4 km'],[0,'Sans limite']];
 const wbar=document.getElementById('walkrail');
 (function buildWalk(){
-  const l=document.createElement('span'); l.className='lbl'; l.textContent='À pied';
+  const l=document.createElement('span'); l.className='lbl'; l.textContent='Rayon';
   wbar.appendChild(l);
   WALKS.forEach(([v,lbl])=>{
     const b=document.createElement('button');
-    b.className='chip'; b.textContent=lbl; b.setAttribute('aria-pressed',String(v===S.maxWalk));
-    b.onclick=()=>{S.maxWalk=v;
+    b.className='chip'; b.textContent=lbl; b.setAttribute('aria-pressed',String(v===S.maxDist));
+    b.onclick=()=>{S.maxDist=v;
       [...wbar.querySelectorAll('.chip')].forEach(x=>x.setAttribute('aria-pressed','false'));
       b.setAttribute('aria-pressed','true'); render();};
     wbar.appendChild(b);
@@ -720,10 +756,58 @@ for(const el of [document.getElementById('grab'),document.getElementById('sheet-
 }
 document.getElementById('sheet-hd').addEventListener('click',e=>{if(e.target.closest('.sorts'))e.stopPropagation();});
 
+// ---------- carte de France ----------
+const frWrap=document.getElementById('fr-wrap'), frSvg=document.getElementById('frmap'),
+      frPins=document.getElementById('frpins');
+function buildFrance(){
+  const b=FRANCE.bbox;
+  frSvg.setAttribute('viewBox',`${b[0]} ${b[1]} ${b[2]-b[0]} ${b[3]-b[1]}`);
+  frSvg.setAttribute('preserveAspectRatio','xMidYMid meet');
+  const p=document.createElementNS(NS,'path');
+  p.setAttribute('class','dep'); p.setAttribute('d',FRANCE.paths);
+  frSvg.textContent=''; frSvg.appendChild(p);
+
+  frPins.textContent='';
+  FRANCE.checked.forEach(c=>{
+    const el=document.createElement('div');
+    el.className='frpin off';
+    el.innerHTML='<span class="bub">'+c.nom+'</span>';
+    el.title=c.nom+' : '+c.why;
+    el.dataset.x=c.x; el.dataset.y=c.y;
+    frPins.appendChild(el);
+  });
+  FRANCE.covered.forEach(c=>{
+    const el=document.createElement('button');
+    el.className='frpin';
+    el.innerHTML='<span class="bub">'+c.nom+'</span><span class="tip"></span>'+
+      '<span class="sub">'+c.n+' parkings</span>';
+    el.setAttribute('aria-label',c.nom+', '+c.n+' parkings, données du '+frDate(c.maj));
+    el.dataset.x=c.x; el.dataset.y=c.y;
+    el.onclick=()=>{switchCity(c.key);closePicker();};
+    frPins.appendChild(el);
+  });
+  placeFrPins();
+}
+function placeFrPins(){
+  const r=frWrap.getBoundingClientRect(); if(!r.width)return;
+  const b=FRANCE.bbox, w=b[2]-b[0], h=b[3]-b[1];
+  const s=Math.min(r.width/w,r.height/h);
+  const ox=r.width/2-(b[0]+w/2)*s, oy=r.height/2-(b[1]+h/2)*s;
+  for(const el of frPins.children){
+    el.style.left=(+el.dataset.x*s+ox)+'px';
+    el.style.top=(+el.dataset.y*s+oy)+'px';
+  }
+}
+new ResizeObserver(placeFrPins).observe(frWrap);
+
 // ---------- city picker ----------
 const picker=document.getElementById('picker');
-document.getElementById('btn-city').onclick=()=>{picker.classList.add('open');picker.setAttribute('aria-hidden','false');};
-document.getElementById('pk-close').onclick=()=>{picker.classList.remove('open');picker.setAttribute('aria-hidden','true');};
+function closePicker(){picker.classList.remove('open');picker.setAttribute('aria-hidden','true');}
+document.getElementById('btn-city').onclick=()=>{
+  picker.classList.add('open');picker.setAttribute('aria-hidden','false');
+  requestAnimationFrame(placeFrPins);
+};
+document.getElementById('pk-close').onclick=closePicker;
 (function buildCities(){
   const box=document.getElementById('cities');
   ORDER_C.forEach(k=>{
@@ -733,12 +817,12 @@ document.getElementById('pk-close').onclick=()=>{picker.classList.remove('open')
     const bd=bestDur(k);
     const nlive=c.parkings.filter(p=>p.live).length;
     b.innerHTML='<span><span class="cn">'+c.ville+'</span><span class="cm">'+
-      c.source.nom+' · '+frDate(c.source.maj)+'<br>'+
+      (c.source.court||c.source.nom)+' · '+frDate(c.source.maj)+'<br>'+
       nf.format(c.parkings.reduce((a,p)=>a+(p.places||0),0))+' places · '+
       coverage(k,bd)+' tarifs sur '+c.parkings.length+
       (nlive?' · '+nlive+' en direct':'')+
       '</span></span><span class="cc">'+c.parkings.length+'</span>';
-    b.onclick=()=>{switchCity(k);picker.classList.remove('open');picker.setAttribute('aria-hidden','true');};
+    b.onclick=()=>{switchCity(k);closePicker();};
     box.appendChild(b);
   });
 })();
@@ -749,7 +833,7 @@ function switchCity(k){
   if(coverage(k,S.dur)===0) S.dur=bestDur(k);
   [...document.getElementById('cities').children].forEach((el,i)=>
     el.setAttribute('aria-current',String(ORDER_C[i]===k)));
-  buildRail(); buildMap(); defaultView(); render(); refreshLive(S.city); refreshLive(k);
+  buildRail(); buildMap(); defaultView(); render(); refreshLive(k);
 }
 
 // ---------- source panel ----------
@@ -768,13 +852,13 @@ function openInfo(){
       <table class="grid-t"><thead><tr><th>Ville</th><th>Données du</th></tr></thead><tbody>${rows}</tbody></table>
     </div>
     <div class="sect"><h4>Pourquoi ce choix</h4><div class="dt-note">
-      La première version de cette application lisait la Base Nationale des Lieux de Stationnement. En comparant ses tarifs nantais à la grille officielle de la métropole, 32 prix sur 33 étaient faux, sous-évalués de 18 % en médiane, et deux parkings payants étaient annoncés gratuits. Cette compilation nationale n'avait pas été rafraîchie depuis un an. Les portails des métropoles, eux, le sont en continu.
+      La première version de cette application lisait la Base Nationale des Lieux de Stationnement. En comparant ses tarifs nantais à la grille officielle de la ville, 32 prix sur 33 étaient faux, sous-évalués de 18 % en médiane, et deux parkings payants étaient annoncés gratuits. Cette compilation nationale n'avait pas été rafraîchie depuis un an. Les portails des villes, eux, le sont en continu.
     </div></div>
     <div class="sect"><h4>Ce qui est mesuré</h4><div class="dt-note">
       Les tarifs par durée, le nombre de places, les places PMR, vélo, moto et recharge électrique, la hauteur maximale, le type d'ouvrage et les abonnements. Chaque fiche affiche exactement les durées que sa ville publie, sans jamais interpoler entre deux points. À Bordeaux, la source donne aussi le tarif de l'horodateur autour du parking, ce qui permet de comparer le parking et la rue.
     </div></div>
-    <div class="sect"><h4>Ce qui est estimé</h4><div class="dt-note">
-      Le temps de marche, et lui seul. Distance à vol d'oiseau majorée de 28 % pour le détour, à 75 mètres par minute. Ce n'est pas un itinéraire calculé sur le réseau piéton, et l'erreur grandit avec la distance.
+    <div class="sect"><h4>Les distances</h4><div class="dt-note">
+      Les distances affichées sont mesurées à vol d'oiseau entre le point posé sur la carte et le parking. C'est une mesure, pas une estimation. La route est forcément plus longue : le bouton d'itinéraire donne le trajet exact.
     </div></div>
     <div class="sect"><h4>Les places libres</h4><div class="dt-note">
       Bordeaux et Nantes publient le nombre de places libres en continu. L'application essaie de le rafraîchir à l'ouverture. Si l'hébergement interdit les appels réseau, elle conserve le dernier relevé embarqué et n'affiche le compteur que s'il a moins de trois heures.
@@ -782,7 +866,7 @@ function openInfo(){
     <div class="sect"><h4>Les champs vides</h4><div class="dt-note">
       Quand une source ne renseigne pas une valeur, l'application écrit « non renseigné » plutôt que de combler le trou. Quand une grille est incohérente, par exemple un tarif qui baisse alors que la durée augmente, elle l'affiche telle quelle avec un avertissement, sans la corriger.
     </div></div>
-    <div class="src"><b>Sources.</b> ${ORDER_C.map(k=>CITIES[k].source.nom).join(', ')}, chacune sous Licence Ouverte. <b>Fond de carte :</b> OpenStreetMap, sous ODbL.</div>`;
+    <div class="src"><b>Attribution.</b> ${ORDER_C.map(k=>CITIES[k].source.nom).join(', ')}, chacune sous Licence Ouverte. <b>Fond de carte :</b> OpenStreetMap, sous ODbL.</div>`;
   detail.classList.add('open'); detail.setAttribute('aria-hidden','false');
 }
 
@@ -854,7 +938,7 @@ function openDetail(id){
     </div>
     ${p.bad.length?`<div class="flag">La grille de ce parking est incohérente dans la base source : le tarif ${p.bad.map(d=>DURLBL[d]).join(' et ')} est inférieur au tarif de la durée précédente. Affiché tel quel, non corrigé.</div>`:''}
     <dl class="specs">
-      ${cell('Marche',w.min+' min · '+fmtDist(w.dist))}
+      ${cell('Distance',fmtDist(w.dist)+' à vol d\'oiseau')}
       ${cell('Places',p.places==null?null:nf.format(p.places))}
       ${cell('Type',ouvrageLabel(p))}
       ${cell('Hauteur max',p.haut==null?null:p.haut.toFixed(2).replace('.',',')+' m')}
@@ -875,7 +959,7 @@ function openDetail(id){
         :p.tar['1h']>p.street1h?'La rue est moins chère, si vous trouvez une place.'
         :'Même prix des deux côtés.'}</div></div>`:''}
     ${p.adr?`<div class="sect"><h4>Adresse</h4><div class="dt-note">${p.adr}${p.usagers?'<br>Usagers : '+p.usagers:''}${p.url?'<br><a href="'+p.url+'" target="_blank" rel="noopener" style="color:var(--blue)">Site de l\'exploitant</a>':''}</div></div>`:''}
-    <div class="sect"><h4>Grille publiée par ${C().source.nom}</h4>
+    <div class="sect"><h4>Grille publiée par ${C().source.court||C().source.nom}</h4>
       <table class="grid-t"><thead><tr><th>Durée</th><th>Tarif</th></tr></thead><tbody>${rows}</tbody></table>
       <div class="legend">Exactement les durées que la source publie. Rien n'est interpolé entre elles.</div>
     </div>
@@ -943,5 +1027,5 @@ S.pick=loadPick()[S.city]||null;
 if(S.pick&&!C().parkings.some(p=>p.id===S.pick)) S.pick=null;
 if(coverage(S.city,S.dur)===0) S.dur=bestDur(S.city);
 new ResizeObserver(applyView).observe(wrap);
-buildRail(); buildMap(); defaultView(); render();
+buildFrance(); buildRail(); buildMap(); defaultView(); render(); refreshLive(S.city);
 </script>

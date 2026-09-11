@@ -41,12 +41,14 @@ def main():
     template = open(TEMPLATE, encoding="utf-8").read()
     maps = open("data/maps.json", encoding="utf-8").read()
     cities = open("data/cities.json", encoding="utf-8").read()
+    france = open("data/france.json", encoding="utf-8").read()
 
-    for marker in ("__MAPS__", "__CITIES__"):
+    for marker in ("__MAPS__", "__CITIES__", "__FRANCE__"):
         if marker not in template:
             raise SystemExit(f"marqueur {marker} absent de {TEMPLATE}")
 
-    body = template.replace("__MAPS__", maps).replace("__CITIES__", cities)
+    body = (template.replace("__MAPS__", maps).replace("__CITIES__", cities)
+                    .replace("__FRANCE__", france))
 
     # Le gabarit commence par <title> puis les <link> de polices : ils doivent
     # rester dans le <head> du document autonome.
