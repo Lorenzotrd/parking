@@ -1,0 +1,833 @@
+<title>Se garer en France</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=Instrument+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --ink:#0A1A2F; --ink-2:#22364F; --mute:#61748C; --faint:#93A3B8;
+  --paper:#FFFFFF; --wash:#EFF3F8; --wash-2:#E3EAF3; --line:#DCE4EE;
+  --blue:#0B5CD5; --blue-soft:#E6EFFC; --blue-ring:rgba(11,92,213,.20);
+  --free:#0C8F63; --free-soft:#E2F4EC;
+  --warn:#B4460F; --warn-soft:#FBECE2;
+  --map-land:#E8EEF5; --map-road:#FFFFFF; --map-road-2:#F7FAFD; --map-ped:#F0E9DF;
+  --map-water:#9FD6E2; --map-water-edge:#63BDCB; --map-park:#DDEAD9; --map-rail:#CBD5E1;
+  --shell:#DCE6F2; --shell-2:#C9D7E8;
+  --sheet-shadow:0 -2px 40px rgba(10,26,47,.13); --pop:0 8px 30px rgba(10,26,47,.16);
+  --r-lg:22px; --r-md:14px; --r-sm:9px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --ink:#EAF1FA; --ink-2:#BCCDE2; --mute:#8CA0BA; --faint:#61748C;
+  --paper:#0E1F33; --wash:#071322; --wash-2:#15293F; --line:#20364F;
+  --blue:#4D95FF; --blue-soft:#122C4D; --blue-ring:rgba(77,149,255,.28);
+  --free:#3DD39B; --free-soft:#0D3328; --warn:#F08B54; --warn-soft:#37200F;
+  --map-land:#0C1C2E; --map-road:#1B3552; --map-road-2:#16293E; --map-ped:#2A2A24;
+  --map-water:#123C4C; --map-water-edge:#1C5C70; --map-park:#13301F; --map-rail:#243A52;
+  --shell:#0A1725; --shell-2:#06101B;
+  --sheet-shadow:0 -2px 40px rgba(0,0,0,.55); --pop:0 8px 30px rgba(0,0,0,.5);
+}}
+:root[data-theme="dark"]{
+  --ink:#EAF1FA; --ink-2:#BCCDE2; --mute:#8CA0BA; --faint:#61748C;
+  --paper:#0E1F33; --wash:#071322; --wash-2:#15293F; --line:#20364F;
+  --blue:#4D95FF; --blue-soft:#122C4D; --blue-ring:rgba(77,149,255,.28);
+  --free:#3DD39B; --free-soft:#0D3328; --warn:#F08B54; --warn-soft:#37200F;
+  --map-land:#0C1C2E; --map-road:#1B3552; --map-road-2:#16293E; --map-ped:#2A2A24;
+  --map-water:#123C4C; --map-water-edge:#1C5C70; --map-park:#13301F; --map-rail:#243A52;
+  --shell:#0A1725; --shell-2:#06101B;
+  --sheet-shadow:0 -2px 40px rgba(0,0,0,.55); --pop:0 8px 30px rgba(0,0,0,.5);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--shell);color:var(--ink);
+  font-family:"Instrument Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased;font-size:15px;line-height:1.45}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+:focus-visible{outline:2.5px solid var(--blue);outline-offset:2px;border-radius:6px}
+.num{font-variant-numeric:tabular-nums}
+.mono{font-family:"DM Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+
+.stage{min-height:100dvh;display:grid;grid-template-columns:minmax(280px,1fr) auto;gap:52px;
+  align-items:center;justify-content:center;padding:34px 36px;max-width:1250px;margin:0 auto;
+  background:radial-gradient(900px 620px at 12% 6%,var(--blue-soft),transparent 62%),
+             radial-gradient(700px 520px at 96% 92%,var(--shell-2),transparent 60%)}
+.pitch{max-width:44ch;display:flex;flex-direction:column;gap:20px}
+.kicker{font-family:"DM Mono",monospace;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue)}
+.pitch h1{font-family:"Familjen Grotesk",sans-serif;font-weight:700;font-size:clamp(32px,4vw,47px);
+  line-height:1.03;letter-spacing:-.026em;margin:0;text-wrap:balance}
+.pitch h1 em{font-style:normal;color:var(--blue)}
+.pitch p{margin:0;color:var(--ink-2);font-size:15.5px;line-height:1.6;max-width:62ch}
+.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2px;background:var(--line);
+  border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden}
+.fact{background:var(--paper);padding:13px 14px;display:flex;flex-direction:column;gap:3px}
+.fact b{font-family:"Familjen Grotesk",sans-serif;font-size:23px;font-weight:600;letter-spacing:-.02em}
+.fact span{font-size:11.5px;color:var(--mute);line-height:1.3}
+.prov{font-size:12.5px;color:var(--mute);line-height:1.58;border-left:2px solid var(--blue);padding-left:12px}
+.prov b{color:var(--ink-2);font-weight:600}
+.prov a{color:var(--blue)}
+
+.shell{width:394px;height:812px;flex:none;position:relative;border-radius:52px;padding:9px;
+  background:linear-gradient(160deg,#3A4A60,#0D1723 60%);
+  box-shadow:0 40px 90px -24px rgba(10,26,47,.55),0 0 0 1px rgba(255,255,255,.08) inset}
+.app{position:relative;width:100%;height:100%;border-radius:44px;overflow:hidden;
+  background:var(--paper);display:flex;flex-direction:column;isolation:isolate}
+.statusbar{height:42px;flex:none;display:flex;align-items:center;justify-content:space-between;
+  padding:0 30px 0 34px;font-size:13.5px;font-weight:600;background:var(--paper);position:relative;z-index:6}
+.statusbar .sigs{display:flex;gap:4px;align-items:center}
+.statusbar .bar{width:3px;border-radius:1px;background:var(--ink)}
+.batt{width:22px;height:11px;border:1.4px solid var(--ink);border-radius:3px;padding:1.4px;opacity:.9}
+.batt i{display:block;height:100%;width:72%;background:var(--ink);border-radius:1px}
+
+.hdr{flex:none;padding:2px 18px 10px;background:var(--paper);position:relative;z-index:5}
+.hdr-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.citybtn{display:flex;align-items:center;gap:7px;min-width:0}
+.citybtn h2{font-family:"Familjen Grotesk",sans-serif;font-size:25px;font-weight:700;
+  letter-spacing:-.028em;margin:0;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.citybtn svg{flex:none;color:var(--mute)}
+.sub{font-size:12.5px;color:var(--mute);margin-top:2px}
+.iconbtn{width:38px;height:38px;flex:none;border-radius:50%;display:grid;place-items:center;
+  background:var(--wash);color:var(--ink-2);transition:background .15s,color .15s}
+.iconbtn:hover{background:var(--wash-2)}
+
+.rail,.filters{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;background:var(--paper);position:relative;z-index:5}
+.rail{padding:11px 18px 10px}
+.filters{padding:0 18px 11px;border-bottom:1px solid var(--line)}
+.rail::-webkit-scrollbar,.filters::-webkit-scrollbar{display:none}
+.rail::after,.filters::after{content:"";flex:none;width:6px}
+.chip{flex:none;padding:7px 14px;border-radius:999px;background:var(--wash);color:var(--ink-2);
+  font-size:13px;font-weight:500;white-space:nowrap;transition:background .14s,color .14s}
+.chip:hover{background:var(--wash-2)}
+.chip[aria-pressed="true"]{background:var(--blue);color:#fff}
+.chip.empty{opacity:.42;cursor:not-allowed;text-decoration:line-through;text-decoration-thickness:1px}
+.chip.empty:hover{background:var(--wash)}
+.fchip{flex:none;padding:5.5px 11px;border-radius:999px;border:1px solid var(--line);
+  font-size:12px;font-weight:500;color:var(--mute);white-space:nowrap;transition:all .14s}
+.fchip:hover{border-color:var(--faint);color:var(--ink-2)}
+.fchip[aria-pressed="true"]{background:var(--blue-soft);border-color:var(--blue);color:var(--blue)}
+
+.mapwrap{position:relative;flex:1;min-height:0;background:var(--map-land);overflow:hidden;touch-action:none}
+#map{position:absolute;inset:0;width:100%;height:100%;display:block}
+#map path{vector-effect:non-scaling-stroke;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.l-waterpoly{fill:var(--map-water);stroke:var(--map-water-edge);stroke-width:.9}
+.l-park{fill:var(--map-park);stroke:none}
+.l-waterline{stroke:var(--map-water-edge);stroke-width:2.6;opacity:.85}
+.l-rail{stroke:var(--map-rail);stroke-width:1.6;stroke-dasharray:5 4}
+.l-minor{stroke:var(--map-road-2);stroke-width:2.4}
+.l-ped{stroke:var(--map-ped);stroke-width:2.6}
+.l-mid{stroke:var(--map-road);stroke-width:4}
+.l-major{stroke:var(--map-road);stroke-width:6}
+.l-major-c{stroke:var(--map-water-edge);stroke-width:7.6;opacity:.16}
+
+.pins{position:absolute;inset:0;pointer-events:none}
+.pin{position:absolute;transform:translate(-50%,-50%);pointer-events:auto;display:flex;align-items:center;
+  gap:4px;padding:4px 8px 4px 6px;border-radius:999px;background:var(--paper);color:var(--ink);
+  box-shadow:0 2px 8px rgba(10,26,47,.22);font-size:12.5px;font-weight:600;white-space:nowrap;
+  letter-spacing:-.01em;border:1.5px solid transparent;transition:transform .12s}
+.pin:hover{transform:translate(-50%,-50%) scale(1.06)}
+.pin .dot{width:7px;height:7px;border-radius:50%;background:var(--blue);flex:none}
+.pin.is-free{background:var(--free);color:#fff}
+.pin.is-free .dot{background:rgba(255,255,255,.85)}
+.pin.is-best{background:var(--blue);color:#fff;box-shadow:0 3px 14px var(--blue-ring),0 2px 8px rgba(10,26,47,.3)}
+.pin.is-best .dot{background:#fff}
+.pin.is-sel{border-color:var(--ink);transform:translate(-50%,-50%) scale(1.1);z-index:3}
+.pin.mini{padding:0;width:11px;height:11px;border-radius:50%;background:var(--blue);
+  border:2px solid var(--paper);box-shadow:0 1px 4px rgba(10,26,47,.3)}
+.pin.mini.is-free{background:var(--free)}
+.pin.mini.is-na{background:var(--faint)}
+.pin.mini .dot,.pin.mini span{display:none}
+.pin.is-na{color:var(--mute)}
+
+.me{position:absolute;transform:translate(-50%,-50%);pointer-events:auto;cursor:grab;touch-action:none;z-index:4}
+.me.drag{cursor:grabbing}
+.me i{display:block;width:18px;height:18px;border-radius:50%;background:var(--blue);
+  border:3px solid var(--paper);box-shadow:0 2px 10px var(--blue-ring),0 1px 6px rgba(10,26,47,.35)}
+.me::before{content:"";position:absolute;inset:-13px;border-radius:50%;background:var(--blue);opacity:.14}
+.me b{position:absolute;top:-27px;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:10.5px;
+  font-weight:600;background:var(--ink);color:var(--paper);padding:2.5px 7px;border-radius:999px}
+.mapui{position:absolute;right:12px;top:12px;display:flex;flex-direction:column;gap:6px;z-index:3}
+.mbtn{width:34px;height:34px;border-radius:11px;background:var(--paper);color:var(--ink-2);
+  display:grid;place-items:center;box-shadow:var(--pop);font-size:16px;font-weight:600}
+.mbtn:hover{color:var(--blue)}
+.hint{position:absolute;left:12px;bottom:278px;z-index:3;font-size:11px;color:var(--ink-2);
+  background:color-mix(in srgb,var(--paper) 88%,transparent);padding:5px 10px;border-radius:999px;
+  box-shadow:var(--pop);max-width:64%;line-height:1.35}
+
+.sheet{position:absolute;left:0;right:0;bottom:0;height:calc(100% - 96px);z-index:7;background:var(--paper);
+  border-radius:var(--r-lg) var(--r-lg) 0 0;box-shadow:var(--sheet-shadow);display:flex;flex-direction:column;
+  transition:transform .32s cubic-bezier(.32,.72,0,1);transform:translateY(calc(100% - 268px))}
+.sheet.full{transform:translateY(0)}
+.sheet.dragging{transition:none}
+.grab{flex:none;padding:9px 0 3px;display:grid;place-items:center;cursor:grab;touch-action:none}
+.grab i{width:38px;height:4.5px;border-radius:3px;background:var(--line);display:block}
+.sheet-hd{flex:none;padding:2px 18px 10px;display:flex;align-items:center;justify-content:space-between;
+  gap:10px;cursor:grab;touch-action:none}
+.sheet-hd h3{font-family:"Familjen Grotesk",sans-serif;font-size:16.5px;font-weight:600;margin:0;letter-spacing:-.02em}
+.cnt{font-size:12px;color:var(--mute)}
+.sorts{display:flex;gap:3px;background:var(--wash);padding:3px;border-radius:999px;flex:none}
+.sorts button{padding:4.5px 11px;border-radius:999px;font-size:12px;font-weight:500;color:var(--mute)}
+.sorts button[aria-pressed="true"]{background:var(--paper);color:var(--ink);box-shadow:0 1px 3px rgba(10,26,47,.12)}
+.banner{margin:0 18px 10px;padding:9px 12px;border-radius:var(--r-sm);background:var(--warn-soft);color:var(--warn);
+  font-size:12.5px;line-height:1.4;display:flex;gap:8px;align-items:flex-start;flex:none}
+.banner svg{flex:none;margin-top:1px}
+.list{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:0 12px 26px;
+  display:flex;flex-direction:column;gap:1px}
+.list>*{flex:none}
+.row{width:100%;display:grid;grid-template-columns:26px 1fr auto;gap:11px;align-items:center;
+  padding:11px 8px;border-radius:var(--r-md);text-align:left;transition:background .13s}
+.row:hover{background:var(--wash)}
+.row[aria-current="true"]{background:var(--blue-soft)}
+.rank{font-family:"DM Mono",monospace;font-size:11.5px;color:var(--faint);text-align:right;padding-top:1px}
+.row[aria-current="true"] .rank{color:var(--blue)}
+.rname{font-size:14.5px;font-weight:600;letter-spacing:-.012em;line-height:1.25;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rmeta{font-size:11.5px;color:var(--mute);margin-top:2px;display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.sep{opacity:.45}
+.tag{font-size:10px;font-weight:600;padding:1.5px 5.5px;border-radius:4px;background:var(--wash-2);color:var(--ink-2)}
+.tag.t-free{background:var(--free-soft);color:var(--free)}
+.tag.t-warn{background:var(--warn-soft);color:var(--warn)}
+.price{text-align:right;font-family:"Familjen Grotesk",sans-serif;font-weight:600;font-size:17px;
+  letter-spacing:-.025em;line-height:1.15}
+.price.free{color:var(--free)}
+.price.na{color:var(--faint);font-size:12.5px;font-weight:500;font-family:"Instrument Sans",sans-serif}
+.price small{display:block;font-family:"Instrument Sans",sans-serif;font-size:10.5px;font-weight:500;
+  color:var(--mute);letter-spacing:0;margin-top:1px}
+
+.detail,.picker{position:absolute;inset:0;z-index:9;background:var(--paper);display:flex;flex-direction:column;
+  transform:translateX(100%);transition:transform .32s cubic-bezier(.32,.72,0,1);visibility:hidden}
+.detail.open,.picker.open{transform:translateX(0);visibility:visible}
+.dt-bar{flex:none;display:flex;align-items:center;gap:10px;padding:12px 16px 10px;border-bottom:1px solid var(--line)}
+.dt-bar h3{font-family:"Familjen Grotesk",sans-serif;font-size:17px;font-weight:600;margin:0;
+  letter-spacing:-.022em;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dt-body{flex:1;min-height:0;overflow-y:auto;padding:16px 16px 30px;display:flex;flex-direction:column;gap:16px}
+.dt-body>*{flex:none}
+.dt-hero{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.dt-hero .big{font-family:"Familjen Grotesk",sans-serif;font-size:38px;font-weight:700;letter-spacing:-.035em;line-height:1}
+.dt-hero .big.free{color:var(--free)}
+.dt-hero .big.na{font-size:22px;color:var(--faint)}
+.dt-hero .for{font-size:13px;color:var(--mute)}
+.dt-note{font-size:13.5px;line-height:1.55;color:var(--ink-2)}
+.specs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden}
+.spec{background:var(--paper);padding:10px 12px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.spec dt{font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--faint);font-family:"DM Mono",monospace}
+.spec dd{margin:0;font-size:13.5px;font-weight:500;line-height:1.3}
+.spec dd.none{color:var(--faint);font-weight:400;font-style:italic}
+.sect h4{font-family:"Familjen Grotesk",sans-serif;font-size:12px;font-weight:600;margin:0 0 8px;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+.grid-t{width:100%;border-collapse:collapse;font-size:13px}
+.grid-t th{text-align:left;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);
+  font-weight:500;padding:0 0 6px;font-family:"DM Mono",monospace}
+.grid-t th:last-child,.grid-t td:last-child{text-align:right}
+.grid-t td{padding:6.5px 0;border-top:1px solid var(--line)}
+.grid-t td:last-child{font-weight:600;font-variant-numeric:tabular-nums}
+.grid-t tr.hi td{color:var(--blue)}
+.grid-t td.na{color:var(--faint);font-weight:400;font-style:italic}
+.chart{width:100%;height:auto;display:block;overflow:visible}
+.legend{display:flex;gap:14px;font-size:11.5px;color:var(--mute);margin-top:6px;flex-wrap:wrap}
+.legend i{display:inline-block;width:14px;height:2.5px;border-radius:2px;vertical-align:middle;margin-right:5px}
+.src{font-size:11.5px;color:var(--mute);line-height:1.55;border-top:1px solid var(--line);padding-top:11px}
+.src b{color:var(--ink-2);font-weight:600}
+.src a{color:var(--blue)}
+.flag{background:var(--warn-soft);color:var(--warn);border-radius:var(--r-sm);padding:9px 12px;
+  font-size:12.5px;line-height:1.45}
+.acts{display:flex;gap:8px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px 16px;
+  border-radius:var(--r-md);font-size:14px;font-weight:600;letter-spacing:-.01em;
+  text-decoration:none;transition:background .15s,color .15s,border-color .15s;flex:1 1 auto;min-width:132px}
+.btn-go{background:var(--blue);color:#fff}
+.btn-go:hover{background:var(--blue-press,#084AAE)}
+.btn-pick{background:var(--wash);color:var(--ink);border:1px solid var(--line)}
+.btn-pick:hover{background:var(--wash-2)}
+.btn-pick[aria-pressed="true"]{background:var(--free-soft);color:var(--free);border-color:var(--free)}
+.alt{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;margin-top:-4px}
+.alt a{color:var(--blue);text-decoration:none;border-bottom:1px solid var(--blue-ring);padding-bottom:1px}
+.chosen{flex:none;margin:0 12px 9px;padding:10px 12px;border-radius:var(--r-md);
+  background:var(--blue-soft);border:1px solid var(--blue);display:flex;align-items:center;gap:10px}
+.chosen .cx{flex:1;min-width:0}
+.chosen .cl{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--blue);
+  font-family:"DM Mono",monospace}
+.chosen .cnm{font-size:14px;font-weight:600;letter-spacing:-.012em;line-height:1.25;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px}
+.chosen .cmt{font-size:11.5px;color:var(--mute);margin-top:1px}
+.chosen .cgo{flex:none;display:inline-flex;align-items:center;gap:5px;background:var(--blue);color:#fff;
+  padding:7px 11px;border-radius:999px;font-size:12.5px;font-weight:600;text-decoration:none}
+.chosen .cclr{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;color:var(--mute)}
+.chosen .cclr:hover{background:var(--wash-2);color:var(--ink)}
+.pin.is-pick{background:var(--ink);color:var(--paper);border-color:var(--paper);z-index:5;
+  box-shadow:0 3px 14px rgba(10,26,47,.4)}
+.pin.is-pick .dot{background:var(--paper)}
+.pin.mini.is-pick{background:var(--ink)}
+.cities{flex:1;min-height:0;overflow-y:auto;padding:8px 12px 30px;display:flex;flex-direction:column;gap:1px}
+.cities>*{flex:none}
+.crow{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 10px;
+  border-radius:var(--r-md);text-align:left;transition:background .13s}
+.crow:hover{background:var(--wash)}
+.crow[aria-current="true"]{background:var(--blue-soft)}
+.crow .cn{font-family:"Familjen Grotesk",sans-serif;font-size:16px;font-weight:600;letter-spacing:-.02em}
+.crow .cm{font-size:11.5px;color:var(--mute);margin-top:1px}
+.crow .cc{font-family:"Familjen Grotesk",sans-serif;font-size:19px;font-weight:600;color:var(--blue);letter-spacing:-.02em}
+@media (prefers-reduced-motion:reduce){*{transition-duration:.01ms !important}}
+@media (max-width:900px){
+  .stage{display:block;padding:0;max-width:none;background:var(--paper)}
+  .pitch{display:none}
+  .shell{width:100%;height:100dvh;border-radius:0;padding:0;box-shadow:none;background:none}
+  .app{border-radius:0}
+  .statusbar{display:none}
+  .hdr{padding-top:max(10px,env(safe-area-inset-top))}
+}
+</style>
+
+<div class="stage">
+  <aside class="pitch">
+    <div class="kicker">Prototype · 7 villes</div>
+    <h1>Combien coûte la place, <em>avant</em> d'y aller.</h1>
+    <p>Une seule source : la Base Nationale des Lieux de Stationnement, publiée par le Point d'Accès National du ministère des Transports. Chaque tarif affiché vient de ce fichier, tel quel. Rien n'est extrapolé, et les durées proposées sont exactement celles que la base renseigne.</p>
+    <div class="facts">
+      <div class="fact"><b class="num" id="f-city">7</b><span>villes, de 60 000 à 330 000 habitants</span></div>
+      <div class="fact"><b class="num" id="f-park">139</b><span>parkings référencés</span></div>
+      <div class="fact"><b class="num" id="f-place">50 758</b><span>places au total</span></div>
+    </div>
+    <p class="prov"><b>Ce que l'app ne fait pas.</b> Choisissez un parking et le bouton d'itinéraire l'ouvre dans Google Maps, Waze ou Plans. En revanche elle n'affiche aucune disponibilité en temps réel : une page publiée ne peut pas appeler d'API externe. Les temps de marche sont estimés à vol d'oiseau majoré de 28 %, pas calculés sur le réseau piéton. Quand la base ne renseigne pas un champ, l'app écrit « non renseigné » au lieu de combler le trou.</p>
+    <p class="prov"><b>Sources.</b> Tarifs, capacités, hauteurs, équipements : <a href="https://www.data.gouv.fr/datasets/base-nationale-des-lieux-de-stationnement">Base Nationale des Lieux de Stationnement</a>, transport.data.gouv.fr. Population : API Découpage Administratif, INSEE. Fond de carte : OpenStreetMap.</p>
+  </aside>
+
+  <div class="shell"><div class="app">
+    <div class="statusbar">
+      <span id="clock" class="num">9:41</span>
+      <span class="sigs"><span class="bar" style="height:5px"></span><span class="bar" style="height:7px"></span>
+        <span class="bar" style="height:9px"></span><span class="bar" style="height:11px"></span>
+        <span class="batt"><i></i></span></span>
+    </div>
+
+    <header class="hdr">
+      <div class="hdr-top">
+        <button class="citybtn" id="btn-city" aria-label="Changer de ville">
+          <h2 id="city-name">Chambéry</h2>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <button class="iconbtn" id="btn-src" aria-label="D'où viennent ces chiffres">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.6v.2"/></svg>
+        </button>
+      </div>
+      <div class="sub" id="subhead">16 parkings · 3 725 places</div>
+    </header>
+
+    <div class="rail" id="rail" role="group" aria-label="Durée"></div>
+    <div class="filters" id="filters" role="group" aria-label="Filtres"></div>
+
+    <div class="mapwrap" id="mapwrap">
+      <svg id="map" role="img" aria-label="Carte des parkings"></svg>
+      <div class="pins" id="pins"></div>
+      <div class="mapui">
+        <button class="mbtn" id="z-in" aria-label="Zoomer">+</button>
+        <button class="mbtn" id="z-out" aria-label="Dézoomer">&minus;</button>
+        <button class="mbtn" id="z-home" aria-label="Recentrer sur le départ" title="Recentrer">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="3.4"/><path d="M12 2.6v3.2M12 18.2v3.2M2.6 12h3.2M18.2 12h3.2"/></svg>
+        </button>
+        <button class="mbtn" id="z-fit" aria-label="Tout voir">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9V5.5A1.5 1.5 0 0 1 5.5 4H9M15 4h3.5A1.5 1.5 0 0 1 20 5.5V9M20 15v3.5a1.5 1.5 0 0 1-1.5 1.5H15M9 20H5.5A1.5 1.5 0 0 1 4 18.5V15"/></svg>
+        </button>
+      </div>
+      <div class="hint">Faites glisser le point bleu pour changer de départ.</div>
+    </div>
+
+    <section class="sheet" id="sheet" aria-label="Classement">
+      <div class="grab" id="grab"><i></i></div>
+      <div class="sheet-hd" id="sheet-hd">
+        <div><h3 id="sheet-title">Les moins chers</h3><div class="cnt" id="sheet-cnt">16 résultats</div></div>
+        <div class="sorts" role="group" aria-label="Trier">
+          <button id="s-price" aria-pressed="true">Prix</button>
+          <button id="s-walk" aria-pressed="false">Marche</button>
+        </div>
+      </div>
+      <div id="chosen-slot"></div>
+      <div id="banner-slot"></div>
+      <div class="list" id="list"></div>
+    </section>
+
+    <section class="detail" id="detail" aria-hidden="true">
+      <div class="dt-bar">
+        <button class="iconbtn" id="dt-close" aria-label="Retour">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+        </button>
+        <h3 id="dt-title">—</h3>
+      </div>
+      <div class="dt-body" id="dt-body"></div>
+    </section>
+
+    <section class="picker" id="picker" aria-hidden="true">
+      <div class="dt-bar">
+        <button class="iconbtn" id="pk-close" aria-label="Retour">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+        </button>
+        <h3 id="pk-title">Choisir une ville</h3>
+      </div>
+      <div class="cities" id="cities"></div>
+    </section>
+  </div></div>
+</div>
+
+<script>
+const MAPS=__MAPS__, CITIES=__CITIES__;
+const DUR=['1h','2h','3h','4h','24h'];
+const DURLBL={'1h':'1 h','2h':'2 h','3h':'3 h','4h':'4 h','24h':'24 h'};
+const eur=new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR'});
+const eur0=new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0});
+const nf=new Intl.NumberFormat('fr-FR');
+const money=c=>c%100===0?eur0.format(c/100):eur.format(c/100);
+const fmtDist=m=>m<1000?Math.round(m/10)*10+' m':(m/1000).toFixed(1).replace('.',',')+' km';
+const OUVR={ouvrage:'Ouvrage',enclos_en_surface:'Enclos en surface',surface:'Surface',
+  parking_relais:'Parking relais',mixte:'Mixte'};
+
+const ORDER_C=['73065','86194','87085','57463','38185','67482','44109'].filter(k=>CITIES[k]);
+const S={city:ORDER_C[0],dur:'1h',sort:'price',sel:null,pick:null,filters:new Set(),me:null};
+function loadPick(){try{return JSON.parse(localStorage.getItem('pick')||'{}');}catch(e){return {};}}
+function savePick(){try{
+  const m=loadPick(); if(S.pick)m[S.city]=S.pick; else delete m[S.city];
+  localStorage.setItem('pick',JSON.stringify(m));
+}catch(e){}}
+const gmaps=p=>'https://www.google.com/maps/dir/?api=1&destination='+p.ll[0]+','+p.ll[1]+'&travelmode=driving';
+const waze=p=>'https://waze.com/ul?ll='+p.ll[0]+','+p.ll[1]+'&navigate=yes';
+const amaps=p=>'https://maps.apple.com/?daddr='+p.ll[0]+','+p.ll[1]+'&dirflg=d';
+const coverage=(k,d)=>CITIES[k].parkings.filter(p=>p.tar[d]!=null).length;
+const bestDur=k=>DUR.reduce((a,d)=>coverage(k,d)>coverage(k,a)?d:a,DUR[0]);
+const C=()=>CITIES[S.city];
+
+// ---------- map ----------
+const NS='http://www.w3.org/2000/svg';
+const map=document.getElementById('map'),wrap=document.getElementById('mapwrap'),pinLayer=document.getElementById('pins');
+const ORDER=[['waterpoly','l-waterpoly'],['park','l-park'],['rail','l-rail'],['minor','l-minor'],
+             ['ped','l-ped'],['mid','l-mid'],['major','l-major'],['waterline','l-waterline']];
+function buildMap(){
+  map.textContent='';
+  const L=MAPS[S.city]||{}, g=document.createElementNS(NS,'g');
+  for(const [k,cls] of ORDER){
+    if(!L[k])continue;
+    if(k==='major'){const c=document.createElementNS(NS,'path');c.setAttribute('class','l-major-c');c.setAttribute('d',L[k]);g.appendChild(c);}
+    const p=document.createElementNS(NS,'path');p.setAttribute('class',cls);p.setAttribute('d',L[k]);g.appendChild(p);
+  }
+  map.appendChild(g);
+}
+const V={cx:0,cy:0,w:2600};
+function applyView(){
+  const r=wrap.getBoundingClientRect(); if(!r.width)return;
+  const h=V.w*r.height/r.width;
+  map.setAttribute('viewBox',`${V.cx-V.w/2} ${V.cy-h/2} ${V.w} ${h}`);
+  map.setAttribute('preserveAspectRatio','xMidYMid meet');
+  scheduleDraw();
+}
+function toScreen(x,y){const r=wrap.getBoundingClientRect(),s=r.width/V.w;
+  return [r.width/2+(x-V.cx)*s,r.height/2+(y-V.cy)*s];}
+function toMap(sx,sy){const r=wrap.getBoundingClientRect(),s=r.width/V.w;
+  return [V.cx+(sx-r.width/2)/s,V.cy+(sy-r.height/2)/s];}
+function defaultView(){
+  const r=wrap.getBoundingClientRect(), c=C();
+  V.w=c.view||1600;
+  V.cx=S.me.x;
+  // push the content into the band left visible above the bottom sheet
+  V.cy=S.me.y+(r.width?131*V.w/r.width:420);
+  applyView();
+}
+function fitAll(bias){
+  const ps=C().parkings, xs=ps.map(p=>p.x).concat([S.me.x]), ys=ps.map(p=>p.y).concat([S.me.y]);
+  V.cx=(Math.min(...xs)+Math.max(...xs))/2;
+  V.cy=(Math.min(...ys)+Math.max(...ys))/2+(bias||0);
+  V.w=Math.max(900,Math.max(...xs)-Math.min(...xs)+800); applyView();
+}
+let panning=null;
+wrap.addEventListener('pointerdown',e=>{
+  if(e.target.closest('.me')||e.target.closest('.pin')||e.target.closest('.mapui'))return;
+  panning={x:e.clientX,y:e.clientY,cx:V.cx,cy:V.cy,id:e.pointerId};
+  wrap.setPointerCapture(e.pointerId);
+});
+wrap.addEventListener('pointermove',e=>{
+  if(!panning||e.pointerId!==panning.id)return;
+  const s=wrap.getBoundingClientRect().width/V.w;
+  V.cx=panning.cx-(e.clientX-panning.x)/s; V.cy=panning.cy-(e.clientY-panning.y)/s; applyView();
+});
+const endPan=e=>{if(panning&&e.pointerId===panning.id)panning=null;};
+wrap.addEventListener('pointerup',endPan); wrap.addEventListener('pointercancel',endPan);
+wrap.addEventListener('wheel',e=>{e.preventDefault();zoomAt(e.deltaY>0?1.14:1/1.14,e.clientX,e.clientY);},{passive:false});
+function zoomAt(f,sx,sy){
+  const r=wrap.getBoundingClientRect();
+  if(sx==null){sx=r.left+r.width/2;sy=r.top+r.height/2;}
+  const [mx,my]=toMap(sx-r.left,sy-r.top);
+  const nw=Math.min(24000,Math.max(400,V.w*f)),k=nw/V.w;
+  V.cx=mx+(V.cx-mx)*k; V.cy=my+(V.cy-my)*k; V.w=nw; applyView();
+}
+document.getElementById('z-in').onclick=()=>zoomAt(1/1.45);
+document.getElementById('z-out').onclick=()=>zoomAt(1.45);
+document.getElementById('z-fit').onclick=()=>fitAll(0);
+document.getElementById('z-home').onclick=()=>defaultView();
+
+const me=document.createElement('div');
+me.className='me'; me.innerHTML='<b>Départ</b><i></i>';
+me.setAttribute('role','button'); me.setAttribute('tabindex','0');
+me.setAttribute('aria-label','Point de départ, déplaçable aux flèches');
+pinLayer.appendChild(me);
+let medrag=null;
+me.addEventListener('pointerdown',e=>{e.stopPropagation();medrag=e.pointerId;me.classList.add('drag');me.setPointerCapture(e.pointerId);});
+me.addEventListener('pointermove',e=>{
+  if(medrag!==e.pointerId)return; e.stopPropagation();
+  const r=wrap.getBoundingClientRect();
+  const [mx,my]=toMap(e.clientX-r.left,e.clientY-r.top);
+  S.me={x:mx,y:my}; render();
+});
+const endMe=e=>{if(medrag===e.pointerId){medrag=null;me.classList.remove('drag');}};
+me.addEventListener('pointerup',endMe); me.addEventListener('pointercancel',endMe);
+me.addEventListener('keydown',e=>{
+  const k={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]}[e.key]; if(!k)return;
+  e.preventDefault(); const st=V.w/14;
+  S.me={x:S.me.x+k[0]*st,y:S.me.y+k[1]*st}; render();
+});
+
+// ---------- data helpers ----------
+const priceOf=(p,d)=>p.tar[d];
+function walkOf(p){
+  const d=Math.hypot(p.x-S.me.x,p.y-S.me.y)*1.28;
+  return {dist:Math.round(d),min:Math.max(1,Math.round(d/75))};
+}
+const FILTERS=[
+  {id:'free',label:'Gratuit',test:p=>p.free},
+  {id:'ouvrage',label:'En ouvrage',test:p=>p.ouvrage==='ouvrage'},
+  {id:'tall',label:'Haut · 1,90 m et +',test:p=>p.haut!=null&&p.haut>=1.90},
+  {id:'ev',label:'Recharge élec.',test:p=>p.ev>0},
+  {id:'pmr',label:'Places PMR',test:p=>p.pmr>0},
+  {id:'velo',label:'Places vélo',test:p=>p.velo>0},
+  {id:'priced',label:'Tarif renseigné',test:p=>p.tar[S.dur]!=null},
+];
+function ranked(){
+  let l=C().parkings.slice();
+  for(const f of FILTERS) if(S.filters.has(f.id)) l=l.filter(f.test);
+  l=l.map(p=>({p,w:walkOf(p),c:priceOf(p,S.dur)}));
+  const key=r=>r.c==null?1e9:r.c;
+  l.sort((a,b)=>S.sort==='price'?(key(a)-key(b))||(a.w.min-b.w.min):(a.w.min-b.w.min)||(key(a)-key(b)));
+  return l;
+}
+
+// ---------- pins ----------
+let rafId=null,CUR=[];
+function scheduleDraw(){if(rafId)return;rafId=requestAnimationFrame(()=>{rafId=null;drawPins();});}
+function drawPins(){
+  const r=wrap.getBoundingClientRect(); if(!r.width)return;
+  const [mx,my]=toScreen(S.me.x,S.me.y);
+  me.style.left=mx+'px'; me.style.top=my+'px';
+  const sheetTop=sheet.classList.contains('full')?60:r.height-262, pad=3;
+  const boxes=[{x1:mx-30,y1:my-40,x2:mx+30,y2:my+18}];
+  CUR.forEach((row,i)=>{
+    const el=row.el; if(!el)return;
+    const [x,y]=toScreen(row.p.x,row.p.y);
+    if(x<-30||y<-30||x>r.width+30||y>r.height+30){el.style.display='none';return;}
+    el.style.display='';
+    el.style.left=x+'px'; el.style.top=y+'px';
+    const w=row.p.__w||58,h=26;
+    const b={x1:x-w/2-pad,y1:y-h/2-pad,x2:x+w/2+pad,y2:y+h/2+pad};
+    const sel=S.sel===row.p.id||S.pick===row.p.id;
+    const off=b.x1<2||b.x2>r.width-2||b.y1<2||b.y2>sheetTop;
+    const hit=boxes.some(o=>!(b.x2<o.x1||b.x1>o.x2||b.y2<o.y1||b.y1>o.y2));
+    if((hit||off)&&!sel)el.classList.add('mini');
+    else{el.classList.remove('mini');boxes.push(b);}
+  });
+}
+const pinLabel=r=>r.c==null?'?':(r.c===0?'gratuit':money(r.c));
+function buildPins(list){
+  CUR.forEach(r=>r.el&&r.el.remove());
+  CUR=list.map((row,i)=>{
+    const el=document.createElement('button');
+    el.className='pin'+(row.c===0?' is-free':'')+(row.c==null?' is-na':'')+
+      (i===0&&S.sort==='price'&&row.c!=null?' is-best':'')+
+      (S.pick===row.p.id?' is-pick':'')+(S.sel===row.p.id?' is-sel':'');
+    el.innerHTML='<span class="dot"></span><span>'+pinLabel(row)+'</span>';
+    el.setAttribute('aria-label',row.p.nom+', '+(row.c==null?'tarif non renseigné':row.c===0?'gratuit':money(row.c)));
+    el.onclick=e=>{e.stopPropagation();openDetail(row.p.id);};
+    pinLayer.appendChild(el);
+    row.p.__w=Math.max(44,26+pinLabel(row).length*7.2);
+    return {p:row.p,el};
+  });
+  drawPins();
+}
+
+// ---------- render ----------
+const sheet=document.getElementById('sheet');
+function render(){
+  const c=C(), list=ranked();
+  document.getElementById('city-name').textContent=c.ville;
+  document.getElementById('subhead').textContent=
+    c.parkings.length+' parkings · '+nf.format(c.parkings.reduce((a,p)=>a+(p.places||0),0))+' places';
+  document.getElementById('sheet-cnt').textContent=
+    list.length+(list.length>1?' résultats':' résultat')+' · '+DURLBL[S.dur];
+  document.getElementById('sheet-title').textContent=S.sort==='price'?'Les moins chers':'Les plus proches';
+
+  const na=list.filter(r=>r.c==null).length, bad=list.filter(r=>r.p.bad.includes(S.dur)).length;
+  const info='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.6v.2"/></svg>';
+  let b='';
+  const miss=DUR.filter(d=>coverage(S.city,d)===0);
+  if(miss.length) b='<div class="banner">'+info+'<div>La base ne publie aucun tarif '+
+    miss.map(d=>DURLBL[d]).join(' ni ')+' pour '+c.ville+'. '+
+    (miss.length>1?'Ces durées sont':'Cette durée est')+' grisée'+(miss.length>1?'s':'')+' au-dessus.</div></div>';
+  else if(bad) b='<div class="banner">'+info+'<div>'+bad+' tarif'+(bad>1?'s sont incohérents':' est incohérent')+
+    ' dans la base source : le prix y baisse quand la durée augmente. Signalé sur la fiche, pas corrigé.</div></div>';
+  else if(na) b='<div class="banner">'+info+'<div>'+na+' parking'+(na>1?'s n\'ont':' n\'a')+
+    ' pas de tarif à '+DURLBL[S.dur]+' dans la base. '+(na>1?'Ils sont classés':'Il est classé')+' en dernier.</div></div>';
+  document.getElementById('banner-slot').innerHTML=b;
+
+  const slot=document.getElementById('chosen-slot');
+  const pk=S.pick?c.parkings.find(q=>q.id===S.pick):null;
+  if(pk){
+    const pw=walkOf(pk), pc=priceOf(pk,S.dur);
+    slot.innerHTML='<div class="chosen"><div class="cx">'+
+      '<div class="cl">Parking choisi</div>'+
+      '<div class="cnm">'+pk.nom+'</div>'+
+      '<div class="cmt">'+pw.min+' min à pied · '+fmtDist(pw.dist)+
+      (pc==null?'':' · '+(pc===0?'gratuit':money(pc)+' pour '+DURLBL[S.dur]))+'</div></div>'+
+      '<a class="cgo" href="'+gmaps(pk)+'" target="_blank" rel="noopener noreferrer">'+
+      '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-8-8 18-2-8-8-2z"/></svg>Y aller</a>'+
+      '<button class="cclr" id="clr-pick" aria-label="Retirer le parking choisi">'+
+      '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>';
+    const cb=document.getElementById('clr-pick');
+    if(cb)cb.onclick=()=>{S.pick=null;savePick();render();
+      if(detail.classList.contains('open'))openDetail(S.sel);};
+  } else slot.innerHTML='';
+
+  const ul=document.getElementById('list'); ul.innerHTML='';
+  list.forEach((row,i)=>{
+    const {p,w,c:price}=row;
+    const btn=document.createElement('button');
+    btn.className='row'; btn.setAttribute('aria-current',String(S.sel===p.id));
+    const tags=[];
+    if(S.pick===p.id)tags.push('<span class="tag" style="background:var(--ink);color:var(--paper)">Choisi</span>');
+    if(p.free)tags.push('<span class="tag t-free">Gratuit</span>');
+    if(p.bad.includes(S.dur))tags.push('<span class="tag t-warn">Tarif douteux</span>');
+    if(p.ouvrage&&OUVR[p.ouvrage]&&!p.free)tags.push('<span class="tag">'+OUVR[p.ouvrage]+'</span>');
+    let ph;
+    if(price==null)ph='<div class="price na">non<br>renseigné</div>';
+    else if(price===0)ph='<div class="price free">gratuit</div>';
+    else ph='<div class="price">'+money(price)+'<small>'+DURLBL[S.dur]+'</small></div>';
+    btn.innerHTML='<span class="rank num">'+(i+1)+'</span><span><span class="rname">'+p.nom+
+      '</span><span class="rmeta">'+w.min+' min à pied<span class="sep">·</span>'+fmtDist(w.dist)+
+      (p.places?'<span class="sep">·</span>'+nf.format(p.places)+' pl.':'')+
+      (tags.length?' '+tags.join(' '):'')+'</span></span>'+ph;
+    btn.onclick=()=>openDetail(p.id);
+    ul.appendChild(btn);
+  });
+  buildPins(list);
+}
+
+// ---------- controls ----------
+const rail=document.getElementById('rail');
+function buildRail(){
+  rail.textContent='';
+  DUR.forEach(d=>{
+    const n=coverage(S.city,d), b=document.createElement('button');
+    b.className='chip'+(n===0?' empty':''); b.textContent=DURLBL[d];
+    b.setAttribute('aria-pressed',String(d===S.dur));
+    if(n===0){
+      b.disabled=true;
+      b.title='Aucun tarif '+DURLBL[d]+' pour '+C().ville+' dans la base';
+      b.setAttribute('aria-label',DURLBL[d]+', non renseigné pour '+C().ville);
+    }else{
+      b.onclick=()=>{S.dur=d;
+        [...rail.children].forEach(x=>x.setAttribute('aria-pressed','false'));
+        b.setAttribute('aria-pressed','true'); render();
+        if(detail.classList.contains('open'))openDetail(S.sel);};
+    }
+    rail.appendChild(b);
+  });
+}
+const fbar=document.getElementById('filters');
+FILTERS.forEach(f=>{
+  const b=document.createElement('button');
+  b.className='fchip'; b.textContent=f.label; b.setAttribute('aria-pressed','false');
+  b.onclick=()=>{S.filters.has(f.id)?S.filters.delete(f.id):S.filters.add(f.id);
+    b.setAttribute('aria-pressed',String(S.filters.has(f.id)));render();};
+  fbar.appendChild(b);
+});
+const setSort=v=>{S.sort=v;
+  document.getElementById('s-price').setAttribute('aria-pressed',String(v==='price'));
+  document.getElementById('s-walk').setAttribute('aria-pressed',String(v==='walk'));render();};
+document.getElementById('s-price').onclick=()=>setSort('price');
+document.getElementById('s-walk').onclick=()=>setSort('walk');
+
+let sd=null;
+const dragStart=e=>{sd={y:e.clientY,full:sheet.classList.contains('full'),id:e.pointerId,moved:0};
+  sheet.classList.add('dragging');e.currentTarget.setPointerCapture(e.pointerId);};
+const dragMove=e=>{if(!sd||e.pointerId!==sd.id)return;
+  const base=sd.full?0:sheet.offsetHeight-268,dy=e.clientY-sd.y;sd.moved=Math.abs(dy);
+  sheet.style.transform='translateY('+Math.max(0,Math.min(sheet.offsetHeight-140,base+dy))+'px)';};
+const dragEnd=e=>{if(!sd||e.pointerId!==sd.id)return;
+  const dy=e.clientY-sd.y;sheet.classList.remove('dragging');sheet.style.transform='';
+  if(sd.moved<6)sheet.classList.toggle('full');
+  else if(dy<-40)sheet.classList.add('full'); else if(dy>40)sheet.classList.remove('full');
+  sd=null;setTimeout(scheduleDraw,340);};
+for(const el of [document.getElementById('grab'),document.getElementById('sheet-hd')]){
+  el.addEventListener('pointerdown',dragStart); el.addEventListener('pointermove',dragMove);
+  el.addEventListener('pointerup',dragEnd); el.addEventListener('pointercancel',dragEnd);
+}
+document.getElementById('sheet-hd').addEventListener('click',e=>{if(e.target.closest('.sorts'))e.stopPropagation();});
+
+// ---------- city picker ----------
+const picker=document.getElementById('picker');
+document.getElementById('btn-city').onclick=()=>{picker.classList.add('open');picker.setAttribute('aria-hidden','false');};
+document.getElementById('pk-close').onclick=()=>{picker.classList.remove('open');picker.setAttribute('aria-hidden','true');};
+(function buildCities(){
+  const box=document.getElementById('cities');
+  ORDER_C.forEach(k=>{
+    const c=CITIES[k];
+    const b=document.createElement('button');
+    b.className='crow'; b.setAttribute('aria-current',String(k===S.city));
+    const miss=DUR.filter(d=>coverage(k,d)===0);
+    const bd=bestDur(k);
+    b.innerHTML='<span><span class="cn">'+c.ville+'</span><span class="cm">'+
+      (c.pop?nf.format(c.pop)+' habitants · ':'')+
+      nf.format(c.parkings.reduce((a,p)=>a+(p.places||0),0))+' places · '+
+      coverage(k,bd)+' tarifs '+DURLBL[bd]+' sur '+c.parkings.length+
+      (miss.length?' · pas de tarif '+miss.map(d=>DURLBL[d]).join(', '):'')+
+      '</span></span><span class="cc">'+c.parkings.length+'</span>';
+    b.onclick=()=>{switchCity(k);picker.classList.remove('open');picker.setAttribute('aria-hidden','true');};
+    box.appendChild(b);
+  });
+})();
+function switchCity(k){
+  S.city=k; S.sel=null; S.me={x:C().start[0],y:C().start[1]};
+  S.pick=loadPick()[k]||null;
+  if(S.pick&&!C().parkings.some(p=>p.id===S.pick)) S.pick=null;
+  if(coverage(k,S.dur)===0) S.dur=bestDur(k);
+  [...document.getElementById('cities').children].forEach((el,i)=>
+    el.setAttribute('aria-current',String(ORDER_C[i]===k)));
+  buildRail(); buildMap(); defaultView(); render();
+}
+
+// ---------- source panel ----------
+document.getElementById('btn-src').onclick=()=>openInfo();
+function openInfo(){
+  S.sel=null;
+  document.getElementById('dt-title').textContent='D\'où viennent ces chiffres';
+  const tot=Object.values(CITIES).reduce((a,c)=>a+c.parkings.length,0);
+  const withT=Object.values(CITIES).reduce((a,c)=>a+c.parkings.filter(p=>p.tar['2h']!=null||p.free).length,0);
+  document.getElementById('dt-body').innerHTML=`
+    <div class="dt-note">Tous les tarifs, capacités, hauteurs et équipements affichés proviennent d'un seul fichier : la <b>Base Nationale des Lieux de Stationnement</b>, publiée par le Point d'Accès National transport.data.gouv.fr sur data.gouv.fr. Aucune valeur n'est complétée, arrondie ou estimée.</div>
+    <dl class="specs">
+      <div class="spec"><dt>Villes</dt><dd>${Object.keys(CITIES).length}</dd></div>
+      <div class="spec"><dt>Parkings</dt><dd class="num">${tot}</dd></div>
+      <div class="spec"><dt>Avec tarif</dt><dd class="num">${withT} sur ${tot}</dd></div>
+      <div class="spec"><dt>Durées</dt><dd>1, 2, 3, 4 et 24 h</dd></div>
+    </dl>
+    <div class="sect"><h4>Ce qui est mesuré</h4><div class="dt-note">
+      Les tarifs par durée, le nombre de places, les places PMR, vélo, moto et recharge électrique, la hauteur maximale, le type d'ouvrage, les abonnements mensuels et l'adresse. La base ne propose que cinq durées, donc l'app n'en propose que cinq : elle n'interpole rien entre deux points.
+    </div></div>
+    <div class="sect"><h4>Ce qui est estimé</h4><div class="dt-note">
+      Le temps de marche seulement. Distance à vol d'oiseau majorée de 28 % pour le détour, à 75 mètres par minute. Ce n'est pas un itinéraire calculé sur le réseau piéton, et la marge d'erreur grandit avec la distance.
+    </div></div>
+    <div class="sect"><h4>Ce qui manque</h4><div class="dt-note">
+      Aucune disponibilité en temps réel : une page publiée ne peut pas appeler d'API externe, donc les places libres ne peuvent pas être affichées. La base ne couvre que le stationnement hors voirie, jamais les places dans la rue. Elle n'est pas exhaustive : une ville peut avoir des parkings absents du fichier. Et les horaires d'ouverture n'y figurent pas.
+    </div></div>
+    <div class="sect"><h4>Les champs vides</h4><div class="dt-note">
+      Quand la base ne renseigne pas une valeur, l'app écrit « non renseigné ». Quand une grille est incohérente, par exemple un tarif 2 h inférieur au tarif 1 h, l'app l'affiche telle quelle avec un avertissement, sans la corriger.
+    </div></div>
+    <div class="src"><b>Jeu de données.</b> Base Nationale des Lieux de Stationnement, version de consolidation v2, transport.data.gouv.fr, sous Licence Ouverte. <b>Population :</b> API Découpage Administratif, données INSEE. <b>Fond de carte :</b> OpenStreetMap, sous ODbL.</div>`;
+  detail.classList.add('open'); detail.setAttribute('aria-hidden','false');
+}
+
+// ---------- detail ----------
+const detail=document.getElementById('detail');
+document.getElementById('dt-close').onclick=()=>{
+  detail.classList.remove('open');detail.setAttribute('aria-hidden','true');S.sel=null;render();};
+function chart(p,w,h){
+  const idx=DUR.map((d,i)=>[i,p.tar[d]]).filter(q=>q[1]!=null);
+  if(idx.length<2)return '';
+  const others=C().parkings.filter(q=>q.id!==p.id&&DUR.every(d=>q.tar[d]!=null));
+  let cheap=null,best=Infinity;
+  for(const q of others){const s=DUR.reduce((a,d)=>a+q.tar[d],0); if(s<best&&s>0){best=s;cheap=q;}}
+  const vals=idx.map(q=>q[1]).concat(cheap?DUR.map(d=>cheap.tar[d]):[]);
+  const maxY=Math.max(200,...vals);
+  const sx=i=>(i/(DUR.length-1))*w, sy=v=>h-(v/maxY)*h;
+  const line=a=>a.map((q,j)=>(j?'L':'M')+sx(q[0]).toFixed(1)+' '+sy(q[1]).toFixed(1)).join(' ');
+  const area='M'+sx(idx[0][0]).toFixed(1)+' '+h+' '+idx.map(q=>'L'+sx(q[0]).toFixed(1)+' '+sy(q[1]).toFixed(1)).join(' ')+
+    'L'+sx(idx[idx.length-1][0]).toFixed(1)+' '+h+'Z';
+  const ci=DUR.indexOf(S.dur), cv=p.tar[S.dur];
+  return `<svg class="chart" viewBox="-10 -16 ${w+56} ${h+42}" role="img" aria-label="Tarif par durée">
+    <line x1="0" y1="${h}" x2="${w}" y2="${h}" stroke="var(--line)"/>
+    <line x1="0" y1="0" x2="${w}" y2="0" stroke="var(--line)" stroke-dasharray="3 4"/>
+    <text x="${w+5}" y="4" font-size="10" fill="var(--faint)" font-family="DM Mono,monospace">${money(Math.round(maxY))}</text>
+    <text x="${w+5}" y="${h+3}" font-size="10" fill="var(--faint)" font-family="DM Mono,monospace">0 €</text>
+    ${cheap?`<path d="${line(DUR.map((d,i)=>[i,cheap.tar[d]]))}" fill="none" stroke="var(--faint)" stroke-width="1.6" stroke-dasharray="4 4"/>`:''}
+    <path d="${area}" fill="var(--blue)" opacity="0.11"/>
+    <path d="${line(idx)}" fill="none" stroke="var(--blue)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>
+    ${DUR.map((d,i)=>`<text x="${sx(i).toFixed(1)}" y="${h+16}" font-size="10" text-anchor="middle" fill="var(--faint)" font-family="DM Mono,monospace">${DURLBL[d]}</text>`).join('')}
+    ${cv!=null?`<circle cx="${sx(ci).toFixed(1)}" cy="${sy(cv).toFixed(1)}" r="4.5" fill="var(--blue)" stroke="var(--paper)" stroke-width="2"/>
+      <text x="${sx(ci).toFixed(1)}" y="${(sy(cv)-11).toFixed(1)}" font-size="11" font-weight="600" text-anchor="middle" fill="var(--blue)" font-family="Instrument Sans,sans-serif">${cv===0?'gratuit':money(cv)}</text>`:''}
+  </svg>
+  <div class="legend"><span><i style="background:var(--blue)"></i>${p.nom}</span>${cheap?`<span><i style="background:var(--faint)"></i>${cheap.nom}, le moins cher de la ville</span>`:''}</div>`;
+}
+function openDetail(id){
+  const p=C().parkings.find(q=>q.id===id); if(!p)return;
+  S.sel=id; detail.classList.add('open'); detail.setAttribute('aria-hidden','false');
+  document.getElementById('dt-title').textContent=p.nom;
+  const w=walkOf(p), c=priceOf(p,S.dur);
+  const cell=(label,v,unit)=>`<div class="spec"><dt>${label}</dt>`+
+    (v==null?'<dd class="none">non renseigné</dd>':`<dd>${v}${unit||''}</dd>`)+'</div>';
+  const CH=chart(p,262,110);
+  const rows=DUR.map(d=>{
+    const v=p.tar[d], flag=p.bad.includes(d);
+    return `<tr class="${d===S.dur?'hi':''}"><td>${DURLBL[d]}</td>`+
+      (v==null?'<td class="na">non renseigné</td>':
+       `<td>${v===0?'gratuit':money(v)}${flag?' ⚠':''}</td>`)+'</tr>';
+  }).join('');
+  document.getElementById('dt-body').innerHTML=`
+    <div class="dt-hero">
+      <span class="big ${c===0?'free':''}${c==null?' na':''}">${c==null?'tarif non renseigné':(c===0?'gratuit':money(c))}</span>
+      ${c!=null?`<span class="for">pour ${DURLBL[S.dur]}</span>`:''}
+    </div>
+    <div class="acts">
+      <a class="btn btn-go" href="${gmaps(p)}" target="_blank" rel="noopener noreferrer">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-8-8 18-2-8-8-2z"/></svg>
+        Itinéraire
+      </a>
+      <button class="btn btn-pick" id="pick-btn" aria-pressed="${S.pick===p.id}">
+        ${S.pick===p.id?'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>Parking choisi':'Choisir ce parking'}
+      </button>
+    </div>
+    <div class="alt">
+      <a href="${waze(p)}" target="_blank" rel="noopener noreferrer">Ouvrir dans Waze</a>
+      <a href="${amaps(p)}" target="_blank" rel="noopener noreferrer">Ouvrir dans Plans</a>
+    </div>
+    ${p.bad.length?`<div class="flag">La grille de ce parking est incohérente dans la base source : le tarif ${p.bad.map(d=>DURLBL[d]).join(' et ')} est inférieur au tarif de la durée précédente. Affiché tel quel, non corrigé.</div>`:''}
+    <dl class="specs">
+      ${cell('Marche',w.min+' min · '+fmtDist(w.dist))}
+      ${cell('Places',p.places==null?null:nf.format(p.places))}
+      ${cell('Type',OUVR[p.ouvrage]||p.ouvrage||null)}
+      ${cell('Hauteur max',p.haut==null?null:p.haut.toFixed(2).replace('.',',')+' m')}
+      ${cell('Places PMR',p.pmr==null?null:p.pmr)}
+      ${cell('Recharge élec.',p.ev==null?null:p.ev)}
+      ${cell('Places vélo',p.velo==null?null:p.velo)}
+      ${cell('Deux-roues moto',p.moto==null?null:p.moto)}
+      ${cell('Abonnement résident',p.abo_r==null?null:money(Math.round(p.abo_r*100))+' / mois')}
+      ${cell('Abonnement non-résident',p.abo_n==null?null:money(Math.round(p.abo_n*100))+' / mois')}
+    </dl>
+    ${p.adr?`<div class="sect"><h4>Adresse</h4><div class="dt-note">${p.adr}${p.usagers?'<br>Usagers : '+p.usagers:''}${p.url?'<br><a href="'+p.url+'" target="_blank" rel="noopener" style="color:var(--blue)">Site de l\'exploitant</a>':''}</div></div>`:''}
+    <div class="sect"><h4>Grille tarifaire de la base</h4>
+      <table class="grid-t"><thead><tr><th>Durée</th><th>Tarif</th></tr></thead><tbody>${rows}</tbody></table>
+      <div class="legend">La base ne renseigne que ces cinq durées. Rien n'est interpolé entre elles.</div>
+    </div>
+    ${CH?`<div class="sect"><h4>Comparaison dans ${C().ville}</h4>${CH}</div>`:''}
+    <div class="src"><b>Source.</b> Base Nationale des Lieux de Stationnement, identifiant <span class="mono">${p.id}</span>, publiée sur transport.data.gouv.fr sous Licence Ouverte.</div>`;
+  const pb=document.getElementById('pick-btn');
+  if(pb)pb.onclick=()=>{S.pick=(S.pick===p.id?null:p.id);savePick();openDetail(p.id);};
+  render();
+}
+
+// ---------- boot ----------
+function clock(){const d=new Date();
+  document.getElementById('clock').textContent=d.getHours()+':'+String(d.getMinutes()).padStart(2,'0');}
+clock(); setInterval(clock,20000);
+(function stats(){
+  const cs=Object.values(CITIES);
+  document.getElementById('f-city').textContent=cs.length;
+  document.getElementById('f-park').textContent=cs.reduce((a,c)=>a+c.parkings.length,0);
+  document.getElementById('f-place').textContent=
+    nf.format(cs.reduce((a,c)=>a+c.parkings.reduce((b,p)=>b+(p.places||0),0),0));
+})();
+S.me={x:C().start[0],y:C().start[1]};
+S.pick=loadPick()[S.city]||null;
+if(S.pick&&!C().parkings.some(p=>p.id===S.pick)) S.pick=null;
+if(coverage(S.city,S.dur)===0) S.dur=bestDur(S.city);
+new ResizeObserver(applyView).observe(wrap);
+buildRail(); buildMap(); defaultView(); render();
+</script>
