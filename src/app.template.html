@@ -990,7 +990,7 @@ async function refreshLive(cityKey){
     const data=await res.json();
     const rows=data.results||[];
     const byId={}, byName={};
-    for(const p of c.parkings){byId[String(p.id)]=p;byName[norm(p.nom)]=p;}
+    for(const p of c.parkings){byId[String(p.id).split('#')[0]]=p;byName[norm(p.nom)]=p;}
     const found={};
     for(const r of rows){
       const key=c.source.live_key;

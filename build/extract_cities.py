@@ -305,6 +305,24 @@ def main():
     for key, ville, loader in SOURCES:
         print(f"\n{ville}...", flush=True)
         parkings, source = loader()
+
+        # Certaines sources reutilisent un identifiant pour deux parkings
+        # distincts, d'autres en oublient. On garantit une cle unique et non
+        # vide, en conservant l'identifiant d'origine avant le diese pour
+        # l'appariement des disponibilites.
+        seen = {}
+        for n, p in enumerate(parkings):
+            if not p.get("id"):
+                p["id"] = f"{key}-sans-id-{n}"
+                print(f"    identifiant absent de la source : {p['nom']} "
+                      f"-> {p['id']}")
+            base = str(p["id"])
+            seen[base] = seen.get(base, 0) + 1
+            if seen[base] > 1:
+                p["id"] = f"{base}#{seen[base]}"
+                print(f"    identifiant dupliqué dans la source : {base} "
+                      f"-> {p['id']} ({p['nom']})")
+
         for p in parkings:
             p["bad"] = check(p["tar"])
             p["free"] = all(v == 0 for v in p["tar"].values() if v is not None) and \

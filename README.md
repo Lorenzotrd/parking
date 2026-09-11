@@ -75,6 +75,13 @@ Bordeaux et Nantes exposent des API de disponibilité, avec l'en-tête
 
 Dans les deux cas, le compteur n'est affiché que s'il a moins de trois heures.
 
+## Application mobile
+
+Une version Expo vit dans [`mobile/`](mobile/), avec son propre README. Mêmes
+données, interface réduite à ce qu'un conducteur regarde : un prix, une
+distance, les places libres, un bouton de navigation. Elle se teste sur
+téléphone avec Expo Go, sans clé d'API.
+
 ## Reconstruire les données
 
 ```bash
@@ -83,6 +90,7 @@ python3 build/build_maps.py       # OpenStreetMap       -> data/maps.json
 python3 build/slim_maps.py        # allège les fonds de carte
 python3 build/build_france.py     # contours du pays    -> data/france.json
 python3 build/assemble.py         # gabarit + données   -> index.html
+python3 build/export_mobile.py    # jeu réduit          -> mobile/assets/cities.json
 ```
 
 Seule la bibliothèque standard de Python 3 est nécessaire. Le second script
@@ -101,11 +109,12 @@ index.html              page autonome, servie telle quelle
 favicon.svg
 vercel.json
 src/app.template.html   le gabarit, avec les marqueurs __MAPS__ et __CITIES__
-build/                  les cinq scripts de génération
+build/                  les six scripts de génération
 data/cities.json        parkings extraits, projetés en mètres
 data/maps.json          fonds de carte des villes, en chemins SVG
 data/france.json        contours du pays et villes vérifiées
 dist/artifact.html      variante sans <head>, pour publication en Artifact
+mobile/                 application Expo, voir son README
 ```
 
 ## Déploiement
