@@ -88,6 +88,10 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 
 .rail,.filters{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;background:var(--paper);position:relative;z-index:5}
 .rail{padding:11px 18px 10px}
+.walkrail{padding:0 18px 10px;align-items:center}
+.walkrail .lbl{flex:none;font-size:11px;color:var(--faint);font-family:"DM Mono",monospace;
+  letter-spacing:.05em;text-transform:uppercase;margin-right:2px}
+.walkrail .chip{padding:5px 11px;font-size:12px}
 .filters{padding:0 18px 11px;border-bottom:1px solid var(--line)}
 .rail::-webkit-scrollbar,.filters::-webkit-scrollbar{display:none}
 .rail::after,.filters::after{content:"";flex:none;width:6px}
@@ -182,6 +186,11 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .tag{font-size:10px;font-weight:600;padding:1.5px 5.5px;border-radius:4px;background:var(--wash-2);color:var(--ink-2)}
 .tag.t-free{background:var(--free-soft);color:var(--free)}
 .tag.t-warn{background:var(--warn-soft);color:var(--warn)}
+.tag.t-live{background:var(--free);color:#fff}
+.tag.t-street{background:var(--blue-soft);color:var(--blue)}
+.srcline{flex:none;margin:0 18px 9px;font-size:11px;color:var(--mute);line-height:1.4}
+.srcline b{color:var(--ink-2);font-weight:600}
+.srcline a{color:var(--blue)}
 .price{text-align:right;font-family:"Familjen Grotesk",sans-serif;font-weight:600;font-size:17px;
   letter-spacing:-.025em;line-height:1.15}
 .price.free{color:var(--free)}
@@ -276,16 +285,17 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 
 <div class="stage">
   <aside class="pitch">
-    <div class="kicker">Prototype · 7 villes</div>
-    <h1>Combien coûte la place, <em>avant</em> d'y aller.</h1>
-    <p>Une seule source : la Base Nationale des Lieux de Stationnement, publiée par le Point d'Accès National du ministère des Transports. Chaque tarif affiché vient de ce fichier, tel quel. Rien n'est extrapolé, et les durées proposées sont exactement celles que la base renseigne.</p>
+    <div class="kicker">Prototype · 4 villes</div>
+    <h1>Le vrai prix de la place, <em>à la source</em>.</h1>
+    <p>Chaque ville est lue au portail de sa propre métropole, celle qui fixe les prix, et non à une compilation nationale en retard d'un an. Bordeaux et Nantes publient même leurs places libres en continu. Chaque tarif affiché porte le nom de son jeu de données et sa date.</p>
     <div class="facts">
-      <div class="fact"><b class="num" id="f-city">7</b><span>villes, de 60 000 à 330 000 habitants</span></div>
-      <div class="fact"><b class="num" id="f-park">139</b><span>parkings référencés</span></div>
-      <div class="fact"><b class="num" id="f-place">50 758</b><span>places au total</span></div>
+      <div class="fact"><b class="num" id="f-city">4</b><span>métropoles, données du mois</span></div>
+      <div class="fact"><b class="num" id="f-park">282</b><span>parkings référencés</span></div>
+      <div class="fact"><b class="num" id="f-place">—</b><span>places au total</span></div>
     </div>
-    <p class="prov"><b>Ce que l'app ne fait pas.</b> Choisissez un parking et le bouton d'itinéraire l'ouvre dans Google Maps, Waze ou Plans. En revanche elle n'affiche aucune disponibilité en temps réel : une page publiée ne peut pas appeler d'API externe. Les temps de marche sont estimés à vol d'oiseau majoré de 28 %, pas calculés sur le réseau piéton. Quand la base ne renseigne pas un champ, l'app écrit « non renseigné » au lieu de combler le trou.</p>
-    <p class="prov"><b>Sources.</b> Tarifs, capacités, hauteurs, équipements : <a href="https://www.data.gouv.fr/datasets/base-nationale-des-lieux-de-stationnement">Base Nationale des Lieux de Stationnement</a>, transport.data.gouv.fr. Population : API Découpage Administratif, INSEE. Fond de carte : OpenStreetMap.</p>
+    <p class="prov"><b>Pourquoi ce virage.</b> La version précédente lisait la base nationale. Contrôlée contre la grille officielle de Nantes, elle donnait 32 prix faux sur 33, sous-évalués de 18 % en médiane, et annonçait gratuits deux parkings payants. Ce fichier n'avait pas bougé depuis un an. Les portails des métropoles, eux, sont rafraîchis en continu.</p>
+    <p class="prov"><b>Ce qui reste estimé.</b> Le temps de marche, et lui seul, à vol d'oiseau majoré de 28 %. Quand une source ne renseigne pas un champ, l'app écrit « non renseigné » plutôt que de combler le trou. Le bouton d'itinéraire ouvre Google Maps, Waze ou Plans.</p>
+    <p class="prov"><b>Sources.</b> Bordeaux Métropole, Nantes Métropole, Métropole Rouen Normandie et Saemes, chacune sous Licence Ouverte. Fond de carte : <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, sous ODbL.</p>
   </aside>
 
   <div class="shell"><div class="app">
@@ -299,17 +309,18 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
     <header class="hdr">
       <div class="hdr-top">
         <button class="citybtn" id="btn-city" aria-label="Changer de ville">
-          <h2 id="city-name">Chambéry</h2>
+          <h2 id="city-name">Bordeaux</h2>
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
         </button>
         <button class="iconbtn" id="btn-src" aria-label="D'où viennent ces chiffres">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.6v.2"/></svg>
         </button>
       </div>
-      <div class="sub" id="subhead">16 parkings · 3 725 places</div>
+      <div class="sub" id="subhead">99 parkings</div>
     </header>
 
     <div class="rail" id="rail" role="group" aria-label="Durée"></div>
+    <div class="rail walkrail" id="walkrail" role="group" aria-label="Distance à pied maximale"></div>
     <div class="filters" id="filters" role="group" aria-label="Filtres"></div>
 
     <div class="mapwrap" id="mapwrap">
@@ -331,12 +342,13 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
     <section class="sheet" id="sheet" aria-label="Classement">
       <div class="grab" id="grab"><i></i></div>
       <div class="sheet-hd" id="sheet-hd">
-        <div><h3 id="sheet-title">Les moins chers</h3><div class="cnt" id="sheet-cnt">16 résultats</div></div>
+        <div><h3 id="sheet-title">Les moins chers</h3><div class="cnt" id="sheet-cnt">99 résultats</div></div>
         <div class="sorts" role="group" aria-label="Trier">
           <button id="s-price" aria-pressed="true">Prix</button>
           <button id="s-walk" aria-pressed="false">Marche</button>
         </div>
       </div>
+      <div id="src-slot"></div>
       <div id="chosen-slot"></div>
       <div id="banner-slot"></div>
       <div class="list" id="list"></div>
@@ -366,18 +378,22 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 
 <script>
 const MAPS=__MAPS__, CITIES=__CITIES__;
-const DUR=['1h','2h','3h','4h','24h'];
-const DURLBL={'1h':'1 h','2h':'2 h','3h':'3 h','4h':'4 h','24h':'24 h'};
+const DUR=['30min','1h','2h','3h','4h','24h'];
+const DURLBL={'30min':'30 min','1h':'1 h','2h':'2 h','3h':'3 h','4h':'4 h','24h':'24 h'};
 const eur=new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR'});
 const eur0=new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0});
 const nf=new Intl.NumberFormat('fr-FR');
 const money=c=>c%100===0?eur0.format(c/100):eur.format(c/100);
+const frDate=s=>{if(!s)return 'date inconnue';const [y,m,d]=s.split('-');
+  const M=['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+  return (+d)+' '+M[+m-1]+' '+y;};
 const fmtDist=m=>m<1000?Math.round(m/10)*10+' m':(m/1000).toFixed(1).replace('.',',')+' km';
-const OUVR={ouvrage:'Ouvrage',enclos_en_surface:'Enclos en surface',surface:'Surface',
-  parking_relais:'Parking relais',mixte:'Mixte'};
+const OUVR={ouvrage:'Ouvrage',enclos_en_surface:'Enclos',surface:'Surface',
+  parking_relais:'Parking relais',mixte:'Mixte',silo:'Silo',enterre:'Souterrain'};
+const ouvrageLabel=p=>{const k=(p.ouvrage||'').toLowerCase();return OUVR[k]||p.ouvrage||null;};
 
-const ORDER_C=['73065','86194','87085','57463','38185','67482','44109'].filter(k=>CITIES[k]);
-const S={city:ORDER_C[0],dur:'1h',sort:'price',sel:null,pick:null,filters:new Set(),me:null};
+const ORDER_C=['bordeaux','nantes','rouen','paris'].filter(k=>CITIES[k]);
+const S={city:ORDER_C[0],dur:'1h',sort:'price',sel:null,pick:null,filters:new Set(),me:null,live:{},maxWalk:15};
 function loadPick(){try{return JSON.parse(localStorage.getItem('pick')||'{}');}catch(e){return {};}}
 function savePick(){try{
   const m=loadPick(); if(S.pick)m[S.city]=S.pick; else delete m[S.city];
@@ -485,18 +501,30 @@ function walkOf(p){
   return {dist:Math.round(d),min:Math.max(1,Math.round(d/75))};
 }
 const FILTERS=[
+  {id:'priced',label:'Tarif renseigné',test:p=>p.tar[S.dur]!=null},
+  {id:'live',label:'Places en direct',test:p=>!!liveOf(p)},
   {id:'free',label:'Gratuit',test:p=>p.free},
-  {id:'ouvrage',label:'En ouvrage',test:p=>p.ouvrage==='ouvrage'},
+  {id:'cheapstreet',label:'Moins cher que la rue',test:p=>p.street1h!=null&&p.tar['1h']!=null&&p.tar['1h']<p.street1h},
   {id:'tall',label:'Haut · 1,90 m et +',test:p=>p.haut!=null&&p.haut>=1.90},
   {id:'ev',label:'Recharge élec.',test:p=>p.ev>0},
   {id:'pmr',label:'Places PMR',test:p=>p.pmr>0},
   {id:'velo',label:'Places vélo',test:p=>p.velo>0},
-  {id:'priced',label:'Tarif renseigné',test:p=>p.tar[S.dur]!=null},
 ];
+function liveOf(p){
+  const fresh=S.live[S.city]&&S.live[S.city][p.id];
+  if(fresh) return fresh;
+  return p.live||null;
+}
+function liveAge(l){
+  if(!l||!l.at) return null;
+  const h=(Date.now()-new Date(l.at).getTime())/36e5;
+  return isFinite(h)?h:null;
+}
 function ranked(){
   let l=C().parkings.slice();
   for(const f of FILTERS) if(S.filters.has(f.id)) l=l.filter(f.test);
   l=l.map(p=>({p,w:walkOf(p),c:priceOf(p,S.dur)}));
+  if(S.maxWalk) l=l.filter(r=>r.w.min<=S.maxWalk);
   const key=r=>r.c==null?1e9:r.c;
   l.sort((a,b)=>S.sort==='price'?(key(a)-key(b))||(a.w.min-b.w.min):(a.w.min-b.w.min)||(key(a)-key(b)));
   return l;
@@ -568,6 +596,16 @@ function render(){
     ' pas de tarif à '+DURLBL[S.dur]+' dans la base. '+(na>1?'Ils sont classés':'Il est classé')+' en dernier.</div></div>';
   document.getElementById('banner-slot').innerHTML=b;
 
+  const src=c.source;
+  if(!list.length&&S.maxWalk){
+    document.getElementById('list').innerHTML=
+      '<div class="srcline" style="padding:18px 8px;font-size:13px">Aucun parking à moins de '+
+      S.maxWalk+' minutes à pied avec ces filtres. Élargissez la distance ou déplacez le point de départ.</div>';
+  }
+  document.getElementById('src-slot').innerHTML='<div class="srcline"><b>'+src.nom+
+    '</b> · données du '+frDate(src.maj)+' · <a href="'+src.url+
+    '" target="_blank" rel="noopener noreferrer">voir la source</a></div>';
+
   const slot=document.getElementById('chosen-slot');
   const pk=S.pick?c.parkings.find(q=>q.id===S.pick):null;
   if(pk){
@@ -595,7 +633,13 @@ function render(){
     if(S.pick===p.id)tags.push('<span class="tag" style="background:var(--ink);color:var(--paper)">Choisi</span>');
     if(p.free)tags.push('<span class="tag t-free">Gratuit</span>');
     if(p.bad.includes(S.dur))tags.push('<span class="tag t-warn">Tarif douteux</span>');
-    if(p.ouvrage&&OUVR[p.ouvrage]&&!p.free)tags.push('<span class="tag">'+OUVR[p.ouvrage]+'</span>');
+    const L=liveOf(p), age=liveAge(L);
+    if(L&&L.libres!=null&&age!=null&&age<3)
+      tags.push('<span class="tag t-live">'+nf.format(L.libres)+' libres</span>');
+    if(p.street1h!=null&&price!=null&&S.dur==='1h'&&price<p.street1h)
+      tags.push('<span class="tag t-street">moins cher que la rue</span>');
+    const ol=ouvrageLabel(p);
+    if(ol&&!p.free)tags.push('<span class="tag">'+ol+'</span>');
     let ph;
     if(price==null)ph='<div class="price na">non<br>renseigné</div>';
     else if(price===0)ph='<div class="price free">gratuit</div>';
@@ -631,6 +675,20 @@ function buildRail(){
     rail.appendChild(b);
   });
 }
+const WALKS=[[5,'5 min'],[15,'15 min'],[30,'30 min'],[0,'Sans limite']];
+const wbar=document.getElementById('walkrail');
+(function buildWalk(){
+  const l=document.createElement('span'); l.className='lbl'; l.textContent='À pied';
+  wbar.appendChild(l);
+  WALKS.forEach(([v,lbl])=>{
+    const b=document.createElement('button');
+    b.className='chip'; b.textContent=lbl; b.setAttribute('aria-pressed',String(v===S.maxWalk));
+    b.onclick=()=>{S.maxWalk=v;
+      [...wbar.querySelectorAll('.chip')].forEach(x=>x.setAttribute('aria-pressed','false'));
+      b.setAttribute('aria-pressed','true'); render();};
+    wbar.appendChild(b);
+  });
+})();
 const fbar=document.getElementById('filters');
 FILTERS.forEach(f=>{
   const b=document.createElement('button');
@@ -672,13 +730,13 @@ document.getElementById('pk-close').onclick=()=>{picker.classList.remove('open')
     const c=CITIES[k];
     const b=document.createElement('button');
     b.className='crow'; b.setAttribute('aria-current',String(k===S.city));
-    const miss=DUR.filter(d=>coverage(k,d)===0);
     const bd=bestDur(k);
+    const nlive=c.parkings.filter(p=>p.live).length;
     b.innerHTML='<span><span class="cn">'+c.ville+'</span><span class="cm">'+
-      (c.pop?nf.format(c.pop)+' habitants · ':'')+
+      c.source.nom+' · '+frDate(c.source.maj)+'<br>'+
       nf.format(c.parkings.reduce((a,p)=>a+(p.places||0),0))+' places · '+
-      coverage(k,bd)+' tarifs '+DURLBL[bd]+' sur '+c.parkings.length+
-      (miss.length?' · pas de tarif '+miss.map(d=>DURLBL[d]).join(', '):'')+
+      coverage(k,bd)+' tarifs sur '+c.parkings.length+
+      (nlive?' · '+nlive+' en direct':'')+
       '</span></span><span class="cc">'+c.parkings.length+'</span>';
     b.onclick=()=>{switchCity(k);picker.classList.remove('open');picker.setAttribute('aria-hidden','true');};
     box.appendChild(b);
@@ -691,7 +749,7 @@ function switchCity(k){
   if(coverage(k,S.dur)===0) S.dur=bestDur(k);
   [...document.getElementById('cities').children].forEach((el,i)=>
     el.setAttribute('aria-current',String(ORDER_C[i]===k)));
-  buildRail(); buildMap(); defaultView(); render();
+  buildRail(); buildMap(); defaultView(); render(); refreshLive(S.city); refreshLive(k);
 }
 
 // ---------- source panel ----------
@@ -700,28 +758,31 @@ function openInfo(){
   S.sel=null;
   document.getElementById('dt-title').textContent='D\'où viennent ces chiffres';
   const tot=Object.values(CITIES).reduce((a,c)=>a+c.parkings.length,0);
-  const withT=Object.values(CITIES).reduce((a,c)=>a+c.parkings.filter(p=>p.tar['2h']!=null||p.free).length,0);
+  const rows=ORDER_C.map(k=>{
+    const c=CITIES[k], nl=c.parkings.filter(p=>p.live).length;
+    return `<tr><td>${c.ville}</td><td>${frDate(c.source.maj)}${nl?' · '+nl+' en direct':''}</td></tr>`;
+  }).join('');
   document.getElementById('dt-body').innerHTML=`
-    <div class="dt-note">Tous les tarifs, capacités, hauteurs et équipements affichés proviennent d'un seul fichier : la <b>Base Nationale des Lieux de Stationnement</b>, publiée par le Point d'Accès National transport.data.gouv.fr sur data.gouv.fr. Aucune valeur n'est complétée, arrondie ou estimée.</div>
-    <dl class="specs">
-      <div class="spec"><dt>Villes</dt><dd>${Object.keys(CITIES).length}</dd></div>
-      <div class="spec"><dt>Parkings</dt><dd class="num">${tot}</dd></div>
-      <div class="spec"><dt>Avec tarif</dt><dd class="num">${withT} sur ${tot}</dd></div>
-      <div class="spec"><dt>Durées</dt><dd>1, 2, 3, 4 et 24 h</dd></div>
-    </dl>
+    <div class="dt-note">Chaque ville est lue à <b>sa propre source</b>, celle de l'autorité qui fixe les prix, et non à une compilation nationale. C'est ce qui garantit que les tarifs sont ceux pratiqués aujourd'hui.</div>
+    <div class="sect"><h4>Une source par ville</h4>
+      <table class="grid-t"><thead><tr><th>Ville</th><th>Données du</th></tr></thead><tbody>${rows}</tbody></table>
+    </div>
+    <div class="sect"><h4>Pourquoi ce choix</h4><div class="dt-note">
+      La première version de cette application lisait la Base Nationale des Lieux de Stationnement. En comparant ses tarifs nantais à la grille officielle de la métropole, 32 prix sur 33 étaient faux, sous-évalués de 18 % en médiane, et deux parkings payants étaient annoncés gratuits. Cette compilation nationale n'avait pas été rafraîchie depuis un an. Les portails des métropoles, eux, le sont en continu.
+    </div></div>
     <div class="sect"><h4>Ce qui est mesuré</h4><div class="dt-note">
-      Les tarifs par durée, le nombre de places, les places PMR, vélo, moto et recharge électrique, la hauteur maximale, le type d'ouvrage, les abonnements mensuels et l'adresse. La base ne propose que cinq durées, donc l'app n'en propose que cinq : elle n'interpole rien entre deux points.
+      Les tarifs par durée, le nombre de places, les places PMR, vélo, moto et recharge électrique, la hauteur maximale, le type d'ouvrage et les abonnements. Chaque fiche affiche exactement les durées que sa ville publie, sans jamais interpoler entre deux points. À Bordeaux, la source donne aussi le tarif de l'horodateur autour du parking, ce qui permet de comparer le parking et la rue.
     </div></div>
     <div class="sect"><h4>Ce qui est estimé</h4><div class="dt-note">
-      Le temps de marche seulement. Distance à vol d'oiseau majorée de 28 % pour le détour, à 75 mètres par minute. Ce n'est pas un itinéraire calculé sur le réseau piéton, et la marge d'erreur grandit avec la distance.
+      Le temps de marche, et lui seul. Distance à vol d'oiseau majorée de 28 % pour le détour, à 75 mètres par minute. Ce n'est pas un itinéraire calculé sur le réseau piéton, et l'erreur grandit avec la distance.
     </div></div>
-    <div class="sect"><h4>Ce qui manque</h4><div class="dt-note">
-      Aucune disponibilité en temps réel : une page publiée ne peut pas appeler d'API externe, donc les places libres ne peuvent pas être affichées. La base ne couvre que le stationnement hors voirie, jamais les places dans la rue. Elle n'est pas exhaustive : une ville peut avoir des parkings absents du fichier. Et les horaires d'ouverture n'y figurent pas.
+    <div class="sect"><h4>Les places libres</h4><div class="dt-note">
+      Bordeaux et Nantes publient le nombre de places libres en continu. L'application essaie de le rafraîchir à l'ouverture. Si l'hébergement interdit les appels réseau, elle conserve le dernier relevé embarqué et n'affiche le compteur que s'il a moins de trois heures.
     </div></div>
     <div class="sect"><h4>Les champs vides</h4><div class="dt-note">
-      Quand la base ne renseigne pas une valeur, l'app écrit « non renseigné ». Quand une grille est incohérente, par exemple un tarif 2 h inférieur au tarif 1 h, l'app l'affiche telle quelle avec un avertissement, sans la corriger.
+      Quand une source ne renseigne pas une valeur, l'application écrit « non renseigné » plutôt que de combler le trou. Quand une grille est incohérente, par exemple un tarif qui baisse alors que la durée augmente, elle l'affiche telle quelle avec un avertissement, sans la corriger.
     </div></div>
-    <div class="src"><b>Jeu de données.</b> Base Nationale des Lieux de Stationnement, version de consolidation v2, transport.data.gouv.fr, sous Licence Ouverte. <b>Population :</b> API Découpage Administratif, données INSEE. <b>Fond de carte :</b> OpenStreetMap, sous ODbL.</div>`;
+    <div class="src"><b>Sources.</b> ${ORDER_C.map(k=>CITIES[k].source.nom).join(', ')}, chacune sous Licence Ouverte. <b>Fond de carte :</b> OpenStreetMap, sous ODbL.</div>`;
   detail.classList.add('open'); detail.setAttribute('aria-hidden','false');
 }
 
@@ -764,12 +825,15 @@ function openDetail(id){
   const cell=(label,v,unit)=>`<div class="spec"><dt>${label}</dt>`+
     (v==null?'<dd class="none">non renseigné</dd>':`<dd>${v}${unit||''}</dd>`)+'</div>';
   const CH=chart(p,262,110);
-  const rows=DUR.map(d=>{
-    const v=p.tar[d], flag=p.bad.includes(d);
-    return `<tr class="${d===S.dur?'hi':''}"><td>${DURLBL[d]}</td>`+
-      (v==null?'<td class="na">non renseigné</td>':
-       `<td>${v===0?'gratuit':money(v)}${flag?' ⚠':''}</td>`)+'</tr>';
-  }).join('');
+  const L=liveOf(p), age=liveAge(L);
+  const rows=(p.grid&&p.grid.length
+    ? p.grid.map(([lbl,v])=>`<tr><td>${lbl}</td><td>${v===0?'gratuit':money(v)}</td></tr>`)
+    : DUR.map(d=>{
+        const v=p.tar[d], flag=p.bad.includes(d);
+        return `<tr class="${d===S.dur?'hi':''}"><td>${DURLBL[d]}</td>`+
+          (v==null?'<td class="na">non renseigné</td>':
+           `<td>${v===0?'gratuit':money(v)}${flag?' ⚠':''}</td>`)+'</tr>';
+      })).join('');
   document.getElementById('dt-body').innerHTML=`
     <div class="dt-hero">
       <span class="big ${c===0?'free':''}${c==null?' na':''}">${c==null?'tarif non renseigné':(c===0?'gratuit':money(c))}</span>
@@ -792,7 +856,7 @@ function openDetail(id){
     <dl class="specs">
       ${cell('Marche',w.min+' min · '+fmtDist(w.dist))}
       ${cell('Places',p.places==null?null:nf.format(p.places))}
-      ${cell('Type',OUVR[p.ouvrage]||p.ouvrage||null)}
+      ${cell('Type',ouvrageLabel(p))}
       ${cell('Hauteur max',p.haut==null?null:p.haut.toFixed(2).replace('.',',')+' m')}
       ${cell('Places PMR',p.pmr==null?null:p.pmr)}
       ${cell('Recharge élec.',p.ev==null?null:p.ev)}
@@ -801,16 +865,65 @@ function openDetail(id){
       ${cell('Abonnement résident',p.abo_r==null?null:money(Math.round(p.abo_r*100))+' / mois')}
       ${cell('Abonnement non-résident',p.abo_n==null?null:money(Math.round(p.abo_n*100))+' / mois')}
     </dl>
+    ${L&&L.libres!=null&&age!=null&&age<3?`<div class="sect"><h4>Places libres</h4>
+      <div class="dt-hero"><span class="big" style="color:var(--free)">${nf.format(L.libres)}</span>
+      <span class="for">sur ${nf.format(L.total||p.places||0)} · relevé il y a ${age<1?Math.round(age*60)+' min':Math.round(age)+' h'}</span></div></div>`:''}
+    ${p.street1h!=null&&p.tar['1h']!=null?`<div class="sect"><h4>Le parking ou la rue</h4>
+      <div class="dt-note">Une heure dans ce parking coûte <b>${p.tar['1h']===0?'rien':money(p.tar['1h'])}</b>.
+      Une heure à l'horodateur juste à côté coûte <b>${p.street1h===0?'rien':money(p.street1h)}</b>.
+      ${p.tar['1h']<p.street1h?'Le parking est moins cher, et la voiture est à l\'abri.'
+        :p.tar['1h']>p.street1h?'La rue est moins chère, si vous trouvez une place.'
+        :'Même prix des deux côtés.'}</div></div>`:''}
     ${p.adr?`<div class="sect"><h4>Adresse</h4><div class="dt-note">${p.adr}${p.usagers?'<br>Usagers : '+p.usagers:''}${p.url?'<br><a href="'+p.url+'" target="_blank" rel="noopener" style="color:var(--blue)">Site de l\'exploitant</a>':''}</div></div>`:''}
-    <div class="sect"><h4>Grille tarifaire de la base</h4>
+    <div class="sect"><h4>Grille publiée par ${C().source.nom}</h4>
       <table class="grid-t"><thead><tr><th>Durée</th><th>Tarif</th></tr></thead><tbody>${rows}</tbody></table>
-      <div class="legend">La base ne renseigne que ces cinq durées. Rien n'est interpolé entre elles.</div>
+      <div class="legend">Exactement les durées que la source publie. Rien n'est interpolé entre elles.</div>
     </div>
     ${CH?`<div class="sect"><h4>Comparaison dans ${C().ville}</h4>${CH}</div>`:''}
-    <div class="src"><b>Source.</b> Base Nationale des Lieux de Stationnement, identifiant <span class="mono">${p.id}</span>, publiée sur transport.data.gouv.fr sous Licence Ouverte.</div>`;
+    <div class="src"><b>Source.</b> ${C().source.nom}, jeu <span class="mono">${C().source.jeu}</span>,
+      mis à jour le ${frDate(C().source.maj)}, sous ${C().source.licence}.
+      Identifiant du parking : <span class="mono">${p.id}</span>.
+      <a href="${C().source.url}" target="_blank" rel="noopener noreferrer">Ouvrir le jeu de données</a></div>`;
   const pb=document.getElementById('pick-btn');
   if(pb)pb.onclick=()=>{S.pick=(S.pick===p.id?null:p.id);savePick();openDetail(p.id);};
   render();
+}
+
+// ---------- disponibilités en direct, quand le réseau l'autorise ----------
+// Publiée en Artifact, la page ne peut joindre aucune API : l'appel échoue en
+// silence et l'app reste sur le relevé embarqué. Servie depuis un hébergeur
+// ordinaire, l'appel aboutit et les places libres deviennent réelles.
+const norm=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+  .toLowerCase().replace(/[^a-z0-9]/g,'');
+async function refreshLive(cityKey){
+  const c=CITIES[cityKey], api=c.source&&c.source.live_api;
+  if(!api) return;
+  try{
+    const ctl=new AbortController(); const t=setTimeout(()=>ctl.abort(),6000);
+    const res=await fetch(api,{signal:ctl.signal});
+    clearTimeout(t);
+    if(!res.ok) return;
+    const data=await res.json();
+    const rows=data.results||[];
+    const byId={}, byName={};
+    for(const p of c.parkings){byId[String(p.id)]=p;byName[norm(p.nom)]=p;}
+    const found={};
+    for(const r of rows){
+      const key=c.source.live_key;
+      let p=byId[String(r[key])]||byName[norm(r[key])];
+      if(!p) continue;
+      const libres=r.libres!=null?r.libres:r.grp_disponible;
+      const total=r.total!=null?r.total:r.grp_exploitation;
+      const at=r.mdate||r.grp_horodatage;
+      if(libres==null) continue;
+      if(r.connecte===0) continue;
+      found[p.id]={libres:libres,total:total,at:at};
+    }
+    if(Object.keys(found).length){
+      S.live[cityKey]=found;
+      if(S.city===cityKey) render();
+    }
+  }catch(e){/* hors ligne ou origine bloquée : on garde le relevé embarqué */}
 }
 
 // ---------- boot ----------
@@ -823,6 +936,7 @@ clock(); setInterval(clock,20000);
   document.getElementById('f-park').textContent=cs.reduce((a,c)=>a+c.parkings.length,0);
   document.getElementById('f-place').textContent=
     nf.format(cs.reduce((a,c)=>a+c.parkings.reduce((b,p)=>b+(p.places||0),0),0));
+  document.getElementById('f-park').textContent=cs.reduce((a,c)=>a+c.parkings.length,0);
 })();
 S.me={x:C().start[0],y:C().start[1]};
 S.pick=loadPick()[S.city]||null;
