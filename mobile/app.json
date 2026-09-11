@@ -17,10 +17,19 @@
     "android": {
       "package": "fr.segarer.app",
       "edgeToEdgeEnabled": true,
-      "permissions": ["ACCESS_COARSE_LOCATION", "ACCESS_FINE_LOCATION"]
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION"
+      ]
     },
     "plugins": [
-      ["expo-location", { "locationWhenInUsePermission": "Pour classer les parkings autour de vous." }]
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Pour classer les parkings autour de vous."
+        }
+      ],
+      "expo-font"
     ]
   }
 }

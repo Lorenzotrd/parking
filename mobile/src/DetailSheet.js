@@ -1,16 +1,14 @@
-// Fiche d'un parking. Le prix, les places libres, comment y aller. Rien de plus.
+// Fiche d'un parking : le prix, les places libres, comment y aller.
 import React from 'react';
 import { Linking, Modal, Platform, Pressable, ScrollView, Text, View } from 'react-native';
-import { distLabel, frDate, money, nf, priceLabel, DUR_LABEL } from './lib';
-import { radius } from './theme';
-import { Tag } from './ui';
+import { distLabel, frDate, nf, priceLabel, DUR_LABEL } from './lib';
+import { font, radius } from './theme';
+import { IconCheck, IconNav, s } from './ui';
 
 const Spec = ({ label, value, c }) => (
-  <View style={{ flex: 1, minWidth: 90 }}>
-    <Text style={{ fontSize: 10.5, color: c.faint, letterSpacing: 0.6, textTransform: 'uppercase' }}>
-      {label}
-    </Text>
-    <Text style={{ fontSize: 14.5, color: c.ink, fontWeight: '600', marginTop: 2 }}>{value}</Text>
+  <View style={{ width: '50%', paddingVertical: 9, paddingRight: 12 }}>
+    <Text style={[s.specLabel, { color: c.faint }]}>{label}</Text>
+    <Text style={[s.specValue, { color: c.ink }]}>{value}</Text>
   </View>
 );
 
@@ -18,14 +16,17 @@ export default function DetailSheet({ row, city, dur, c, onClose, onPick, picked
   if (!row) return null;
   const { p, dist, cents, live } = row;
   const [lat, lon] = p.ll;
+  const isPicked = picked === p.id;
 
   const navigate = () => {
-    const url = Platform.select({
+    const native = Platform.select({
       ios: `maps://?daddr=${lat},${lon}&dirflg=d`,
       android: `google.navigation:q=${lat},${lon}`,
     });
     const web = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lon}&travelmode=driving`;
-    Linking.canOpenURL(url).then((ok) => Linking.openURL(ok ? url : web)).catch(() => Linking.openURL(web));
+    Linking.canOpenURL(native)
+      .then((ok) => Linking.openURL(ok ? native : web))
+      .catch(() => Linking.openURL(web));
   };
 
   const specs = [
@@ -39,104 +40,107 @@ export default function DetailSheet({ row, city, dur, c, onClose, onPick, picked
     <Modal visible animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
       <View style={{ flex: 1, backgroundColor: c.paper }}>
         <View style={{
-          flexDirection: 'row', alignItems: 'center', padding: 16,
-          borderBottomWidth: 1, borderBottomColor: c.line, gap: 12,
+          flexDirection: 'row', alignItems: 'center', padding: 18, gap: 12,
+          borderBottomWidth: 1, borderBottomColor: c.line,
         }}>
-          <Text style={{ flex: 1, fontSize: 18, fontWeight: '700', color: c.ink, letterSpacing: -0.4 }}
-                numberOfLines={1}>
-            {p.nom}
-          </Text>
-          <Pressable onPress={onClose} accessibilityLabel="Fermer" hitSlop={10}>
-            <Text style={{ fontSize: 15, color: c.blue, fontWeight: '600' }}>Fermer</Text>
+          <Text style={[s.sheetTitle, { color: c.ink, flex: 1 }]} numberOfLines={1}>{p.nom}</Text>
+          <Pressable onPress={onClose} hitSlop={10} accessibilityLabel="Fermer">
+            <Text style={[s.btnLabel, { color: c.blue }]}>Fermer</Text>
           </Pressable>
         </View>
 
-        <ScrollView contentContainerStyle={{ padding: 16, gap: 18, paddingBottom: 40 }}>
+        <ScrollView contentContainerStyle={{ padding: 18, paddingBottom: 44, gap: 18 }}>
           <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 10, flexWrap: 'wrap' }}>
-            <Text style={{
-              fontSize: 40, fontWeight: '800', letterSpacing: -1.4,
+            <Text style={[s.big, {
               color: cents === 0 ? c.free : cents == null ? c.faint : c.ink,
-            }}>
+              fontSize: cents == null ? 22 : 38,
+            }]}>
               {cents == null ? 'tarif non publié' : priceLabel(cents)}
             </Text>
             {cents != null && (
-              <Text style={{ fontSize: 14, color: c.mute }}>pour {DUR_LABEL[dur]}</Text>
+              <Text style={[s.body, { color: c.mute }]}>pour {DUR_LABEL[dur]}</Text>
             )}
           </View>
 
           {p.bad && p.bad.includes(dur) && (
             <View style={{ backgroundColor: c.warnSoft, padding: 11, borderRadius: radius.sm }}>
-              <Text style={{ color: c.warn, fontSize: 12.5, lineHeight: 18 }}>
-                La grille de la source est incohérente sur cette durée. Affichée telle quelle.
+              <Text style={[s.small, { color: c.warn }]}>
+                La grille de la source est incohérente sur cette durée. Affichée telle quelle,
+                sans correction.
               </Text>
             </View>
           )}
 
           {live && (
-            <View style={{ backgroundColor: c.freeSoft, padding: 13, borderRadius: radius.md }}>
-              <Text style={{ fontSize: 30, fontWeight: '800', color: c.free, letterSpacing: -1 }}>
+            <View style={{ backgroundColor: c.freeSoft, padding: 14, borderRadius: radius.md }}>
+              <Text style={{
+                fontFamily: font.display, fontSize: 32, color: c.free, letterSpacing: -1,
+              }}>
                 {nf.format(live.libres)}
-                <Text style={{ fontSize: 14, fontWeight: '600' }}>
-                  {live.total ? ` places libres sur ${nf.format(live.total)}` : ' places libres'}
-                </Text>
               </Text>
-              <Text style={{ fontSize: 11.5, color: c.free, marginTop: 2, opacity: 0.85 }}>
-                relevé il y a {live.hours < 1 ? `${Math.round(live.hours * 60)} min` : `${Math.round(live.hours)} h`}
+              <Text style={[s.small, { color: c.free }]}>
+                {live.total ? `places libres sur ${nf.format(live.total)} · ` : 'places libres · '}
+                relevé il y a {live.hours < 1
+                  ? `${Math.round(live.hours * 60)} min`
+                  : `${Math.round(live.hours)} h`}
               </Text>
             </View>
           )}
 
-          <Pressable
-            onPress={navigate}
-            accessibilityRole="button"
-            style={{
-              backgroundColor: c.blue, padding: 16, borderRadius: radius.md, alignItems: 'center',
-            }}
-          >
-            <Text style={{ color: '#fff', fontSize: 16, fontWeight: '700' }}>Y aller</Text>
+          <Pressable onPress={navigate} accessibilityRole="button"
+                     style={({ pressed }) => ({
+                       backgroundColor: pressed ? c.bluePress : c.blue,
+                       padding: 15, borderRadius: radius.md, flexDirection: 'row',
+                       alignItems: 'center', justifyContent: 'center', gap: 8,
+                     })}>
+            <IconNav color="#FFFFFF" />
+            <Text style={[s.btnLabel, { color: '#FFFFFF', fontSize: 16 }]}>Y aller</Text>
           </Pressable>
 
-          <Pressable
-            onPress={() => onPick(picked === p.id ? null : p.id)}
-            accessibilityRole="button"
-            style={{
-              padding: 14, borderRadius: radius.md, alignItems: 'center', borderWidth: 1,
-              borderColor: picked === p.id ? c.free : c.line,
-              backgroundColor: picked === p.id ? c.freeSoft : c.paper,
-            }}
-          >
-            <Text style={{
-              fontSize: 15, fontWeight: '600',
-              color: picked === p.id ? c.free : c.ink,
-            }}>
-              {picked === p.id ? 'Parking choisi' : 'Choisir ce parking'}
+          <Pressable onPress={() => onPick(isPicked ? null : p.id)} accessibilityRole="button"
+                     style={{
+                       padding: 14, borderRadius: radius.md, flexDirection: 'row',
+                       alignItems: 'center', justifyContent: 'center', gap: 8, borderWidth: 1,
+                       borderColor: isPicked ? c.free : c.line,
+                       backgroundColor: isPicked ? c.freeSoft : c.paper,
+                     }}>
+            {isPicked && <IconCheck color={c.free} />}
+            <Text style={[s.btnLabel, { color: isPicked ? c.free : c.ink }]}>
+              {isPicked ? 'Parking choisi' : 'Choisir ce parking'}
             </Text>
           </Pressable>
 
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap', rowGap: 16 }}>
+          <View style={{
+            flexDirection: 'row', flexWrap: 'wrap', borderWidth: 1, borderColor: c.line,
+            borderRadius: radius.md, paddingHorizontal: 12, paddingVertical: 2,
+          }}>
             {specs.map(([l, v]) => <Spec key={l} label={l} value={v} c={c} />)}
           </View>
 
           {p.street1h != null && p.tar && p.tar['1h'] != null && (
             <View>
-              <Text style={{ fontSize: 12.5, color: c.ink2, lineHeight: 19 }}>
-                Une heure ici : {priceLabel(p.tar['1h'])}. À l'horodateur juste à côté :{' '}
+              <Text style={[s.h4, { color: c.mute }]}>Le parking ou la rue</Text>
+              <Text style={[s.body, { color: c.ink2 }]}>
+                Une heure ici coûte {priceLabel(p.tar['1h'])}. À l'horodateur juste à côté,{' '}
                 {priceLabel(p.street1h)}.{' '}
                 {p.tar['1h'] < p.street1h
-                  ? 'Le parking est moins cher.'
+                  ? 'Le parking est moins cher, et la voiture est à l’abri.'
                   : p.tar['1h'] > p.street1h
                   ? 'La rue est moins chère, si vous trouvez une place.'
-                  : 'Même prix.'}
+                  : 'Même prix des deux côtés.'}
               </Text>
             </View>
           )}
 
           {p.adr ? (
-            <Text style={{ fontSize: 12.5, color: c.mute, lineHeight: 18 }}>{p.adr}</Text>
+            <View>
+              <Text style={[s.h4, { color: c.mute }]}>Adresse</Text>
+              <Text style={[s.body, { color: c.ink2 }]}>{p.adr}</Text>
+            </View>
           ) : null}
 
-          <Text style={{ fontSize: 11, color: c.faint, lineHeight: 16 }}>
-            {city.source.nom}, données du {frDate(city.source.maj)}, Licence Ouverte.
+          <Text style={[s.small, { color: c.faint, borderTopWidth: 1, borderTopColor: c.line, paddingTop: 12 }]}>
+            {city.source.nom}, données du {frDate(city.source.maj)}, sous Licence Ouverte.
           </Text>
         </ScrollView>
       </View>

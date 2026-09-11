@@ -1,7 +1,8 @@
-// Briques visuelles partagées.
+// Briques visuelles calquées sur le CSS de la version web.
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { radius } from './theme';
+import Svg, { Circle, Path } from 'react-native-svg';
+import { font, radius } from './theme';
 
 export function Chip({ label, active, disabled, onPress, c, small }) {
   return (
@@ -10,16 +11,15 @@ export function Chip({ label, active, disabled, onPress, c, small }) {
       accessibilityRole="button"
       accessibilityState={{ selected: !!active, disabled: !!disabled }}
       style={[
-        s.chip,
-        small && s.chipSmall,
+        small ? s.chipSmall : s.chip,
         { backgroundColor: active ? c.blue : c.wash },
-        disabled && { opacity: 0.38 },
+        disabled && { opacity: 0.42 },
       ]}
     >
       <Text
         style={[
-          s.chipText,
-          { color: active ? '#fff' : c.ink2 },
+          small ? s.chipTextSmall : s.chipText,
+          { color: active ? '#FFFFFF' : c.ink2 },
           disabled && { textDecorationLine: 'line-through' },
         ]}
       >
@@ -32,8 +32,9 @@ export function Chip({ label, active, disabled, onPress, c, small }) {
 export function Tag({ label, tone, c }) {
   const tones = {
     free: { bg: c.freeSoft, fg: c.free },
-    live: { bg: c.free, fg: '#fff' },
+    live: { bg: c.free, fg: '#FFFFFF' },
     warn: { bg: c.warnSoft, fg: c.warn },
+    pick: { bg: c.ink, fg: c.paper },
     plain: { bg: c.wash2, fg: c.ink2 },
   };
   const t = tones[tone] || tones.plain;
@@ -44,22 +45,72 @@ export function Tag({ label, tone, c }) {
   );
 }
 
+export const IconTarget = ({ color, size = 19 }) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+       stroke={color} strokeWidth={2.1} strokeLinecap="round">
+    <Circle cx="12" cy="12" r="3.4" />
+    <Path d="M12 2.6v3.2M12 18.2v3.2M2.6 12h3.2M18.2 12h3.2" />
+  </Svg>
+);
+
+export const IconChevron = ({ color, size = 15 }) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+       stroke={color} strokeWidth={2.6} strokeLinecap="round" strokeLinejoin="round">
+    <Path d="M6 9l6 6 6-6" />
+  </Svg>
+);
+
+export const IconNav = ({ color, size = 15 }) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+       stroke={color} strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round">
+    <Path d="M3 11l18-8-8 18-2-8-8-2z" />
+  </Svg>
+);
+
+export const IconCheck = ({ color, size = 15 }) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+       stroke={color} strokeWidth={2.6} strokeLinecap="round" strokeLinejoin="round">
+    <Path d="M4 12.5l5 5L20 6.5" />
+  </Svg>
+);
+
 export const s = StyleSheet.create({
-  chip: {
-    paddingHorizontal: 14, paddingVertical: 8, borderRadius: 999, marginRight: 6,
-  },
-  chipSmall: { paddingHorizontal: 11, paddingVertical: 6 },
-  chipText: { fontSize: 13.5, fontWeight: '600', letterSpacing: -0.1 },
-  tag: {
-    paddingHorizontal: 6, paddingVertical: 2, borderRadius: 5, marginRight: 5, marginTop: 3,
-  },
-  tagText: { fontSize: 10.5, fontWeight: '700', letterSpacing: 0.1 },
-  title: { fontSize: 26, fontWeight: '800', letterSpacing: -0.8 },
-  price: { fontSize: 17, fontWeight: '700', letterSpacing: -0.4 },
+  // rails de filtres
+  chip: { paddingHorizontal: 14, paddingVertical: 7, borderRadius: 999, marginRight: 6 },
+  chipSmall: { paddingHorizontal: 11, paddingVertical: 5.5, borderRadius: 999, marginRight: 6 },
+  chipText: { fontFamily: font.bodyMedium, fontSize: 13, letterSpacing: -0.1 },
+  chipTextSmall: { fontFamily: font.bodyMedium, fontSize: 12, letterSpacing: -0.1 },
+
+  // étiquettes
+  tag: { paddingHorizontal: 5.5, paddingVertical: 2, borderRadius: 4, marginRight: 5, marginTop: 3 },
+  tagText: { fontFamily: font.bodySemi, fontSize: 10, letterSpacing: 0.15 },
+
+  // en-tête
+  city: { fontFamily: font.display, fontSize: 25, letterSpacing: -0.7, lineHeight: 29 },
+  sub: { fontFamily: font.body, fontSize: 12.5, marginTop: 1 },
+  iconBtn: { width: 38, height: 38, borderRadius: 19, alignItems: 'center', justifyContent: 'center' },
+
+  // lignes de la liste
   row: {
-    flexDirection: 'row', alignItems: 'center', paddingVertical: 12,
-    paddingHorizontal: 14, borderRadius: radius.md, gap: 12,
+    flexDirection: 'row', alignItems: 'center', paddingVertical: 11,
+    paddingHorizontal: 8, borderRadius: radius.md, gap: 11,
   },
-  name: { fontSize: 15, fontWeight: '600', letterSpacing: -0.2 },
-  meta: { fontSize: 12, marginTop: 2 },
+  rank: { fontFamily: font.body, fontSize: 11.5, width: 20, textAlign: 'right' },
+  name: { fontFamily: font.bodySemi, fontSize: 14.5, letterSpacing: -0.2 },
+  meta: { fontFamily: font.body, fontSize: 11.5, marginTop: 2 },
+  price: { fontFamily: font.displayMedium, fontSize: 17, letterSpacing: -0.45, textAlign: 'right' },
+  priceUnit: { fontFamily: font.bodyMedium, fontSize: 10.5, marginTop: 1, textAlign: 'right' },
+
+  // feuille de détail
+  sheetTitle: { fontFamily: font.display, fontSize: 18, letterSpacing: -0.45 },
+  big: { fontFamily: font.display, fontSize: 38, letterSpacing: -1.3 },
+  h4: {
+    fontFamily: font.displayMedium, fontSize: 11.5, letterSpacing: 0.9,
+    textTransform: 'uppercase', marginBottom: 8,
+  },
+  specLabel: { fontFamily: font.body, fontSize: 10.5, letterSpacing: 0.7, textTransform: 'uppercase' },
+  specValue: { fontFamily: font.bodyMedium, fontSize: 13.5, marginTop: 2 },
+  body: { fontFamily: font.body, fontSize: 13.5, lineHeight: 20 },
+  small: { fontFamily: font.body, fontSize: 11.5, lineHeight: 17 },
+  btnLabel: { fontFamily: font.bodySemi, fontSize: 15, letterSpacing: -0.2 },
 });

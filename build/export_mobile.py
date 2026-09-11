@@ -9,7 +9,7 @@ nombre de niveaux, grilles detaillees, reste dans le jeu web.
 
 Usage : python3 build/export_mobile.py
 """
-import json, os
+import json, math, os
 
 SRC = "data/cities.json"
 OUT = "mobile/assets/cities.json"
@@ -42,12 +42,19 @@ def main():
             slim["nom"] = q.get("nom") or "Parking"
             parkings.append(slim)
         src = city["source"]
+        # Point de depart par defaut : la mediane geometrique des parkings,
+        # reconvertie en latitude et longitude. Le centre de la boite englobante
+        # tombait dans le vide, jusqu'a 4,8 km du premier parking a Paris.
+        mx, my = city["start"]
+        lat0, lon0 = city["lat0"], city["lon0"]
+        origin = [round(lat0 - my / 110574, 6),
+                  round(lon0 + mx / (111320 * math.cos(math.radians(lat0))), 6)]
         out[key] = {
             "ville": city["ville"],
             "source": {"court": src.get("court", src["nom"]), "nom": src["nom"],
                        "maj": src.get("maj"), "url": src.get("url"),
                        "live_api": src.get("live_api"), "live_key": src.get("live_key")},
-            "center": [city["lat0"], city["lon0"]],
+            "center": origin,
             "parkings": parkings,
         }
         live = sum(1 for p in parkings if p.get("live"))

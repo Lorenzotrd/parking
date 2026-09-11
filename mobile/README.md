@@ -25,6 +25,19 @@ Volontairement absents : les abonnements mensuels, les places vélo et moto, le
 nombre de niveaux, les grilles tarifaires complètes et les explications de
 méthode. Tout cela vit dans la version web, où l'on a le temps de lire.
 
+## Prévisualiser le design sans téléphone
+
+`react-native-maps` n'existe pas sur le web. `src/Map.web.js` fournit un
+substitut qui rend un rectangle à la place de la carte, ce qui permet de
+contrôler la typographie et la mise en page dans un navigateur :
+
+```bash
+npx expo start --web
+```
+
+Metro choisit `src/Map.js` sur iOS et Android, donc ce substitut n'entre jamais
+dans le paquet mobile.
+
 ## Différences avec la version web
 
 | | Web | Mobile |
@@ -32,7 +45,8 @@ méthode. Tout cela vit dans la version web, où l'on a le temps de lire.
 | Fond de carte | SVG dessiné, 3 Mo | tuiles natives, 0 Mo embarqué |
 | Position | point à déplacer | GPS réel, appui long pour déplacer |
 | Places libres | bloquées par le CSP en Artifact | rafraîchies à l'ouverture et au retour dans l'app |
-| Données | 164 Ko | 73 Ko, champs inutiles retirés |
+| Données | 164 Ko | 69 Ko, champs inutiles retirés |
+| Typographie | Familjen Grotesk et Instrument Sans | les mêmes, chargées par expo-font |
 
 Le jeu mobile est produit par `python3 build/export_mobile.py` depuis la racine
 du dépôt. Relancez-le après toute mise à jour des données.
