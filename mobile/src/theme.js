@@ -20,7 +20,13 @@ const dark = {
   mapStyle: 'dark',
 };
 
-export const palette = (scheme) => (scheme === 'dark' ? dark : light);
+// L'application assume un parti pris clair, comme la version web sur laquelle
+// elle est calquée : fond blanc, bleu franc. Le thème sombre reste défini plus
+// haut ; passer `true` ici le rebranche sur le réglage du système.
+const FOLLOW_SYSTEM = false;
+
+export const palette = (scheme) =>
+  (FOLLOW_SYSTEM && scheme === 'dark' ? dark : light);
 export const radius = { lg: 22, md: 14, sm: 9 };
 
 // Familjen Grotesk pour les titres et les prix, Instrument Sans pour le reste :

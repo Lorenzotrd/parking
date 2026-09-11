@@ -1,9 +1,12 @@
 // Fiche d'un parking : le prix, les places libres, comment y aller.
 import React from 'react';
-import { Linking, Modal, Platform, Pressable, ScrollView, Text, View } from 'react-native';
-import { distLabel, frDate, nf, priceLabel, DUR_LABEL } from './lib';
+import {
+  Linking, Modal, Platform, Pressable, ScrollView, Text, useWindowDimensions, View,
+} from 'react-native';
+import { distLabel, frDate, nf, priceLabel, DURATIONS, DUR_LABEL } from './lib';
 import { font, radius } from './theme';
 import { IconCheck, IconNav, s } from './ui';
+import Chart from './Chart';
 
 const Spec = ({ label, value, c }) => (
   <View style={{ width: '50%', paddingVertical: 9, paddingRight: 12 }}>
@@ -12,7 +15,8 @@ const Spec = ({ label, value, c }) => (
   </View>
 );
 
-export default function DetailSheet({ row, city, dur, c, onClose, onPick, picked }) {
+export default function DetailSheet({ row, city, cityKey, dur, c, onClose, onPick, picked }) {
+  const { width } = useWindowDimensions();
   if (!row) return null;
   const { p, dist, cents, live } = row;
   const [lat, lon] = p.ll;
@@ -131,6 +135,36 @@ export default function DetailSheet({ row, city, dur, c, onClose, onPick, picked
               </Text>
             </View>
           )}
+
+          <View>
+            <Text style={[s.h4, { color: c.mute }]}>
+              Grille publiée par {city.source.court}
+            </Text>
+            <View style={{ borderWidth: 1, borderColor: c.line, borderRadius: radius.md, paddingHorizontal: 12 }}>
+              {(p.grid && p.grid.length
+                ? p.grid
+                : DURATIONS.filter((d) => p.tar[d] != null).map((d) => [DUR_LABEL[d], p.tar[d]])
+              ).map(([label, value], i, arr) => (
+                <View key={label} style={{
+                  flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 8,
+                  borderBottomWidth: i === arr.length - 1 ? 0 : 1, borderBottomColor: c.line,
+                }}>
+                  <Text style={[s.body, { color: c.ink2 }]}>{label}</Text>
+                  <Text style={[s.specValue, { color: c.ink, marginTop: 0 }]}>
+                    {value === 0 ? 'gratuit' : priceLabel(value)}
+                  </Text>
+                </View>
+              ))}
+            </View>
+            <Text style={[s.small, { color: c.faint, marginTop: 6 }]}>
+              Exactement les durées que la source publie. Rien n'est interpolé entre elles.
+            </Text>
+          </View>
+
+          <View>
+            <Text style={[s.h4, { color: c.mute }]}>Comparaison dans {city.ville}</Text>
+            <Chart parking={p} cityKey={cityKey} dur={dur} c={c} width={width - 36} />
+          </View>
 
           {p.adr ? (
             <View>

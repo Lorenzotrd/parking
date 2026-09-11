@@ -15,10 +15,11 @@ SRC = "data/cities.json"
 OUT = "mobile/assets/cities.json"
 DURATIONS = ["30min", "1h", "2h", "3h", "4h", "24h"]
 
-# Champs volontairement ecartes : grid, abo_r, abo_n, moto, velo, covoit, niv,
-# info, usagers, pmr, ev, x, y. L'application ne les affiche pas, ils n'ont donc
-# rien a faire dans le fichier embarque.
-KEEP = ("id", "nom", "adr", "ll", "tar", "bad", "free", "places",
+# Champs volontairement ecartes : abo_r, abo_n, moto, velo, covoit, niv, info,
+# usagers, pmr, ev, x, y. L'application ne les affiche pas, ils n'ont donc rien
+# a faire dans le fichier embarque. La grille tarifaire native, elle, est
+# conservee : la fiche l'affiche en tableau et en courbe.
+KEEP = ("id", "nom", "adr", "ll", "tar", "grid", "bad", "free", "places",
         "haut", "ouvrage", "street1h", "live")
 
 LABEL = {"ouvrage": "Ouvrage", "enclos_en_surface": "Enclos", "surface": "Surface",

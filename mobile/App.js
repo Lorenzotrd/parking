@@ -3,8 +3,8 @@
 // pour les titres et les prix, Instrument Sans pour le reste.
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  ActivityIndicator, AppState, FlatList, Modal, Pressable, ScrollView,
-  StyleSheet, Text, useColorScheme, View,
+  ActivityIndicator, AppState, FlatList, Modal, Platform, Pressable, ScrollView,
+  StyleSheet, Text, View,
 } from 'react-native';
 import MapView, { Marker } from './src/Map';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
@@ -24,15 +24,15 @@ import {
   distLabel, fetchLive, nf, priceLabel, rank,
 } from './src/lib';
 import { Chip, IconChevron, IconTarget, Tag, s } from './src/ui';
+import { MAP_STYLE } from './src/mapStyle';
 import CityScreen from './src/CityScreen';
 import DetailSheet from './src/DetailSheet';
 
-const RADII = [[500, '500 m'], [1500, '1,5 km'], [4000, '4 km'], [0, 'Tout']];
 const ZOOM = { latitudeDelta: 0.035, longitudeDelta: 0.035 };
+const ROW_H = 62;
 
 export default function App() {
-  const scheme = useColorScheme();
-  const c = palette(scheme);
+  const c = palette('light');
   const [fontsReady] = useFonts({
     FamiljenGrotesk_600SemiBold, FamiljenGrotesk_700Bold,
     InstrumentSans_400Regular, InstrumentSans_500Medium, InstrumentSans_600SemiBold,
@@ -41,7 +41,6 @@ export default function App() {
   const [cityKey, setCityKey] = useState(CITY_KEYS[0]);
   const [dur, setDur] = useState('1h');
   const [sort, setSort] = useState('price');
-  const [maxDist, setMaxDist] = useState(1500);
   const [origin, setOrigin] = useState(CITIES[CITY_KEYS[0]].center);
   const [live, setLive] = useState({});
   const [openRow, setOpenRow] = useState(null);
@@ -73,8 +72,8 @@ export default function App() {
   }, []);
 
   const rows = useMemo(
-    () => rank(cityKey, origin, dur, sort, maxDist, live[cityKey]),
-    [cityKey, origin, dur, sort, maxDist, live],
+    () => rank(cityKey, origin, dur, sort, 0, live[cityKey]),
+    [cityKey, origin, dur, sort, live],
   );
 
   const switchCity = (key) => {
@@ -106,6 +105,11 @@ export default function App() {
     }
   };
 
+  const renderRow = useCallback(({ item, index }) => (
+    <Row item={item} index={index} c={c} dur={dur}
+         picked={picked} onOpen={setOpenRow} />
+  ), [c, dur, picked]);
+
   if (!fontsReady) {
     return (
       <View style={{ flex: 1, backgroundColor: c.paper, alignItems: 'center', justifyContent: 'center' }}>
@@ -119,7 +123,7 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={{ flex: 1, backgroundColor: c.paper }} edges={['top']}>
-        <StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
+        <StatusBar style="dark" />
 
         <View style={st.header}>
           <Pressable onPress={() => setShowCities(true)} accessibilityRole="button"
@@ -147,24 +151,21 @@ export default function App() {
           ))}
         </ScrollView>
 
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}
-                    style={st.railThin} contentContainerStyle={st.railInner}>
-          <Text style={[st.railLabel, { color: c.faint }]}>RAYON</Text>
-          {RADII.map(([v, label]) => (
-            <Chip key={label} label={label} c={c} small active={v === maxDist}
-                  onPress={() => setMaxDist(v)} />
-          ))}
-          <View style={{ width: 8 }} />
-          <Chip label={sort === 'price' ? 'Moins cher' : 'Plus proche'} c={c} small active
-                onPress={() => setSort(sort === 'price' ? 'dist' : 'price')} />
-        </ScrollView>
+        <View style={st.sortRow}>
+          <Chip label="Moins cher" c={c} small active={sort === 'price'}
+                onPress={() => setSort('price')} />
+          <Chip label="Plus proche" c={c} small active={sort === 'dist'}
+                onPress={() => setSort('dist')} />
+        </View>
 
         <View style={[st.mapWrap, { borderColor: c.line }]}>
           <MapView
             ref={mapRef}
             style={{ flex: 1 }}
             initialRegion={{ latitude: origin[0], longitude: origin[1], ...ZOOM }}
-            userInterfaceStyle={scheme === 'dark' ? 'dark' : 'light'}
+            userInterfaceStyle="light"
+            mapType={Platform.OS === 'ios' ? 'mutedStandard' : 'standard'}
+            customMapStyle={MAP_STYLE}
             showsUserLocation
             showsPointsOfInterest={false}
             showsCompass={false}
@@ -176,12 +177,12 @@ export default function App() {
           >
             <Marker coordinate={{ latitude: origin[0], longitude: origin[1] }}
                     title="Point de départ" pinColor="purple" />
-            {rows.slice(0, 40).map((r, i) => (
+            {rows.slice(0, 25).map((r, i) => (
               <Marker
                 key={r.p.id}
                 coordinate={{ latitude: r.p.ll[0], longitude: r.p.ll[1] }}
-                onCalloutPress={() => setOpenRow(r)}
                 onPress={() => setOpenRow(r)}
+                tracksViewChanges={false}
                 title={r.p.nom}
                 description={`${priceLabel(r.cents)} · ${distLabel(r.dist)}`}
               >
@@ -235,38 +236,15 @@ export default function App() {
             contentContainerStyle={{ paddingHorizontal: 10, paddingBottom: 24 }}
             ListEmptyComponent={
               <Text style={[s.body, { color: c.mute, padding: 18 }]}>
-                Aucun parking dans ce rayon. Élargissez la distance, ou restez appuyé sur la
-                carte pour déplacer le point.
+                Aucun parking ici. Restez appuyé sur la carte pour déplacer le point.
               </Text>
             }
-            renderItem={({ item, index }) => (
-              <Pressable onPress={() => setOpenRow(item)} accessibilityRole="button"
-                         style={({ pressed }) => [s.row, pressed && { backgroundColor: c.wash }]}>
-                <Text style={[s.rank, { color: c.faint }]}>{index + 1}</Text>
-                <View style={{ flex: 1 }}>
-                  <Text style={[s.name, { color: c.ink }]} numberOfLines={1}>{item.p.nom}</Text>
-                  <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }}>
-                    <Text style={[s.meta, { color: c.mute, marginRight: 6 }]}>
-                      {distLabel(item.dist)}
-                      {item.p.places ? ` · ${nf.format(item.p.places)} places` : ''}
-                    </Text>
-                    {item.live && <Tag label={`${nf.format(item.live.libres)} libres`} tone="live" c={c} />}
-                    {item.cents === 0 && <Tag label="Gratuit" tone="free" c={c} />}
-                    {picked === item.p.id && <Tag label="Choisi" tone="pick" c={c} />}
-                  </View>
-                </View>
-                <View>
-                  <Text style={[s.price, {
-                    color: item.cents === 0 ? c.free : item.cents == null ? c.faint : c.ink,
-                  }]}>
-                    {item.cents == null ? '—' : priceLabel(item.cents)}
-                  </Text>
-                  {item.cents != null && (
-                    <Text style={[s.priceUnit, { color: c.mute }]}>{DUR_LABEL[dur]}</Text>
-                  )}
-                </View>
-              </Pressable>
-            )}
+            renderItem={renderRow}
+            initialNumToRender={12}
+            maxToRenderPerBatch={10}
+            windowSize={7}
+            removeClippedSubviews
+            getItemLayout={(_, index) => ({ length: ROW_H, offset: ROW_H * index, index })}
           />
         </View>
 
@@ -284,7 +262,7 @@ export default function App() {
         </Modal>
 
         <DetailSheet
-          row={openRow} city={city} dur={dur} c={c} picked={picked}
+          row={openRow} city={city} cityKey={cityKey} dur={dur} c={c} picked={picked}
           onClose={() => setOpenRow(null)}
           onPick={(id) => { setPicked(id); setOpenRow(null); }}
         />
@@ -293,13 +271,46 @@ export default function App() {
   );
 }
 
+// Mémoïsée : sans cela, faire défiler redessinait chaque ligne à chaque image.
+const Row = React.memo(function Row({ item, index, c, dur, picked, onOpen }) {
+  return (
+    <Pressable onPress={() => onOpen(item)} accessibilityRole="button"
+               style={({ pressed }) => [s.row, { height: ROW_H },
+                                        pressed && { backgroundColor: c.wash }]}>
+      <Text style={[s.rank, { color: c.faint }]}>{index + 1}</Text>
+      <View style={{ flex: 1 }}>
+        <Text style={[s.name, { color: c.ink }]} numberOfLines={1}>{item.p.nom}</Text>
+        <View style={{ flexDirection: 'row', flexWrap: 'nowrap', alignItems: 'center' }}>
+          <Text style={[s.meta, { color: c.mute, marginRight: 6 }]} numberOfLines={1}>
+            {distLabel(item.dist)}
+            {item.p.places ? ` · ${nf.format(item.p.places)} places` : ''}
+          </Text>
+          {item.live && <Tag label={`${nf.format(item.live.libres)} libres`} tone="live" c={c} />}
+          {item.cents === 0 && <Tag label="Gratuit" tone="free" c={c} />}
+          {picked === item.p.id && <Tag label="Choisi" tone="pick" c={c} />}
+        </View>
+      </View>
+      <View>
+        <Text style={[s.price, {
+          color: item.cents === 0 ? c.free : item.cents == null ? c.faint : c.ink,
+        }]}>
+          {item.cents == null ? '—' : priceLabel(item.cents)}
+        </Text>
+        {item.cents != null && (
+          <Text style={[s.priceUnit, { color: c.mute }]}>{DUR_LABEL[dur]}</Text>
+        )}
+      </View>
+    </Pressable>
+  );
+});
+
 const st = StyleSheet.create({
   header: {
     flexDirection: 'row', alignItems: 'center', paddingHorizontal: 18,
     paddingTop: 4, paddingBottom: 10, gap: 12,
   },
   rail: { flexGrow: 0, paddingBottom: 9 },
-  railThin: { flexGrow: 0, paddingBottom: 11 },
+  sortRow: { flexDirection: 'row', paddingHorizontal: 18, paddingBottom: 11 },
   railInner: { paddingHorizontal: 18, alignItems: 'center' },
   railLabel: { fontFamily: font.body, fontSize: 10.5, letterSpacing: 0.8, marginRight: 8 },
   mapWrap: { flex: 1, borderTopWidth: 1, borderBottomWidth: 1, overflow: 'hidden' },

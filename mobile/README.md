@@ -14,16 +14,28 @@ npx expo start
 Scannez le QR code avec **Expo Go**. Aucune clé d'API n'est nécessaire pour
 tester : `react-native-maps` est inclus dans Expo Go.
 
-## Ce que l'app montre, et rien d'autre
+## Ce que l'app montre
 
-Un prix pour la durée choisie, une distance, les places libres quand la ville
-les publie, et un bouton qui lance la navigation. La fiche ajoute la hauteur
-sous plafond, le nombre de places et, à Bordeaux, la comparaison avec
-l'horodateur voisin.
+L'écran principal : un prix pour la durée choisie, une distance, les places
+libres quand la ville les publie. La fiche d'un parking : le prix en grand, les
+places libres, un bouton de navigation, la hauteur sous plafond, la grille
+tarifaire complète telle que la ville la publie, une courbe comparant ce parking
+au moins cher de la ville, et à Bordeaux la comparaison avec l'horodateur voisin.
 
-Volontairement absents : les abonnements mensuels, les places vélo et moto, le
-nombre de niveaux, les grilles tarifaires complètes et les explications de
-méthode. Tout cela vit dans la version web, où l'on a le temps de lire.
+Volontairement absents : les abonnements mensuels, les places vélo et moto, les
+places PMR, les bornes de recharge, le nombre de niveaux et les explications de
+méthode. Un contrôle vérifie qu'aucun champ exporté n'est ignoré par l'interface.
+
+## Couleurs
+
+L'application assume un parti pris clair, fond blanc et bleu franc, comme la
+version web dont elle reprend les jetons. Le thème sombre est défini dans
+`src/theme.js` mais désactivé : passer `FOLLOW_SYSTEM` à `true` le rebranche sur
+le réglage du système.
+
+Le fond de carte suit la même palette. Sur Android, `src/mapStyle.js` applique
+un style Google. Sur iOS, Plans ignore les styles personnalisés, on y utilise
+donc `mapType="mutedStandard"`, son rendu atténué, qui en est le plus proche.
 
 ## Prévisualiser le design sans téléphone
 
